@@ -6,20 +6,23 @@ import Ionicons from "@expo/vector-icons/Ionicons";
 import { NavigationContainer } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 
-import Groups from "../groups/groups.component";
+import GroupsChatNavigator from "../groups-chat-navigator/groups-chat-navigator.component";
 import Search from "../search/search.component";
 import Profile from "../profile/profile.component";
 
 const Tab = createBottomTabNavigator();
+const globalOptions = {
+	headerShown: false,
+};
 
 export default function MainApp() {
 	return (
 		<Tab.Navigator
-			initialRouteName="Groups"
+			initialRouteName="GroupsChatNavigator"
 			screenOptions={({ route }) => ({
 				tabBarIcon: ({ focused, color, size }) => {
 					let iconName;
-					if (route.name === "Groups") {
+					if (route.name === "GroupsChatNavigator") {
 						iconName = "people-outline";
 					} else if (route.name === "Search") {
 						iconName = "search-outline";
@@ -30,9 +33,17 @@ export default function MainApp() {
 				},
 			})}
 		>
-			<Tab.Screen name="Groups" component={Groups} />
-			<Tab.Screen name="Search" component={Search} />
-			<Tab.Screen name="Profile" component={Profile} />
+			<Tab.Screen
+				name="GroupsChatNavigator"
+				component={GroupsChatNavigator}
+				options={(navigation) => ({
+					...globalOptions,
+					tabBarLabel: "Groups",
+					title: "Groups",
+				})}
+			/>
+			<Tab.Screen name="Search" component={Search} options={globalOptions} />
+			<Tab.Screen name="Profile" component={Profile} options={globalOptions} />
 		</Tab.Navigator>
 	);
 }

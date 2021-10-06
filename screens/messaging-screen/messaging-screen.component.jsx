@@ -1,12 +1,13 @@
 import { StatusBar } from "expo-status-bar";
 import React from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, View, Button } from "react-native";
 
-export default function MessagingScreen() {
+export default function MessagingScreen({ navigation }) {
 	return (
 		<View style={styles.container}>
 			<Text>Messaging Screen</Text>
 			<StatusBar style="auto" />
+			<Button title="Back" onPress={() => navigation.goBack()} />
 		</View>
 	);
 }

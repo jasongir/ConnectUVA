@@ -1,5 +1,5 @@
 import { StatusBar } from "expo-status-bar";
-import React from "react";
+import React, { useContext } from "react";
 import { StyleSheet, Text, View, Button } from "react-native";
 
 export default function Onboarding({ navigation }) {
@@ -8,7 +8,7 @@ export default function Onboarding({ navigation }) {
 	};
 	return (
 		<View style={styles.container}>
-			<Text>Onboarding Screen</Text>
+			<Text style={styles.text}>Onboarding Screen</Text>
 			<StatusBar style="auto" />
 			<Button title="next" onPress={nextPress} />
 		</View>
@@ -22,4 +22,5 @@ const styles = StyleSheet.create({
 		alignItems: "center",
 		justifyContent: "center",
 	},
+	text: {},
 });
