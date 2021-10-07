@@ -1,5 +1,5 @@
 import { StatusBar } from "expo-status-bar";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { StyleSheet, Text, View, ScrollView } from "react-native";
 import Ionicons from "@expo/vector-icons/Ionicons";
 
@@ -15,21 +15,22 @@ const groups = Array(10)
 		name: `group ${idx}`,
 		lastText: {
 			text: `last message in ${idx}`,
-			dateStamp: new Date().toLocaleDateString(),
-			timeStamp: new Date().toLocaleTimeString(),
+			timeStamp: new Date(),
 		},
 		avatar: null,
 		unreadMessageNumber: 1,
 	}));
 
 export default function Groups({ navigation }) {
+	const [searching, setSearching] = useState(false);
+
 	return (
 		<View style={styles.container}>
 			<View style={styles.header}>
 				<Text style={styles.title}>Groups</Text>
 				<Ionicons name="search-outline" size={styles.title.fontSize} />
 			</View>
-			<ScrollView>
+			<ScrollView style={{ width: "100%" }}>
 				{groups.map(({ name, lastText, avatar, unreadMessageNumber }) => (
 					<GroupListItem
 						key={name}
@@ -65,6 +66,6 @@ const styles = StyleSheet.create({
 	},
 	title: {
 		fontSize: 30,
-		fontWeight: "800",
+		fontWeight: "700",
 	},
 });
