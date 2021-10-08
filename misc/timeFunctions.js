@@ -21,6 +21,10 @@ export const timeFromDate = (timeStamp) => {
 	return `${newHours}:${finalMinutes} ${AM_PM}`;
 };
 
+export const formatDate = (timeStamp) => {
+	return `${timeStamp.getMonth()}/${timeStamp.getDate()}/${timeStamp.getFullYear()}`;
+};
+
 // TESTING:
 // const today = new Date("October 8, 2021 1:53 PM");
 
