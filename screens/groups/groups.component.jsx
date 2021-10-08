@@ -6,8 +6,7 @@ import Ionicons from "@expo/vector-icons/Ionicons";
 import GroupListItem from "../../components/group-list-item/group-list-item.component";
 
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-
-const Stack = createNativeStackNavigator();
+import { headerTopPadding } from "../../misc/styleConstants";
 
 const groups = Array(10)
 	.fill()
@@ -18,7 +17,7 @@ const groups = Array(10)
 			timeStamp: new Date(),
 		},
 		avatar: null,
-		unreadMessageNumber: 1,
+		unreadMessageNumber: Math.floor(Math.random() * 7),
 	}));
 
 export default function Groups({ navigation }) {
@@ -38,7 +37,7 @@ export default function Groups({ navigation }) {
 						lastText={lastText}
 						avatar={avatar}
 						unreadMessageNumber={unreadMessageNumber}
-						onPress={() => navigation.push("MessagingScreen")}
+						navigation={navigation}
 					/>
 				))}
 			</ScrollView>
@@ -60,7 +59,7 @@ const styles = StyleSheet.create({
 		justifyContent: "space-between",
 		alignItems: "baseline",
 		width: "100%",
-		paddingTop: 60,
+		paddingTop: headerTopPadding,
 		paddingBottom: 20,
 		paddingHorizontal: 30,
 	},

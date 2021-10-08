@@ -1,6 +1,7 @@
 import React from "react";
 import { StyleSheet, Text, View } from "react-native";
 
+// Passed in an actual picture or the name (inserts initials)
 const Avatar = ({ avatar, name }) => {
 	const initials = name
 		.split(" ")
