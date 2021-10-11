@@ -63,6 +63,7 @@ export default function Groups({ navigation }) {
 				</View>
 				{searching ? (
 					<SearchBar
+						lightTheme
 						placeholder="search for a group..."
 						onChangeText={updateSearchValue}
 						value={searchValue}
