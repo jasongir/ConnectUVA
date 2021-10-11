@@ -8,18 +8,19 @@ import MessageHeader from "../../components/message-header/message-header.compon
 export default function MessagingScreen({ navigation, route }) {
 	const { groupName } = route.params;
 
-	const currentUser = "555";
+	const currentUserId = "555";
 	// dummy data at the end
 	return (
 		<View style={styles.container}>
 			<MessageHeader groupName={groupName} navigation={navigation} />
 			<ScrollView style={{ width: "100%" }}>
-				{lastMessages.map(({ id, content, user, timeStamp, currentUser }) => (
+				{lastMessages.map(({ id, content, user, timeStamp }) => (
 					<Message
 						key={id}
 						content={content}
 						user={user}
 						timeStamp={timeStamp}
+						currentUserId={currentUserId}
 					/>
 				))}
 			</ScrollView>
