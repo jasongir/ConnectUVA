@@ -1,6 +1,6 @@
 import { StatusBar } from "expo-status-bar";
 import React from "react";
-import { StyleSheet, Text, View, Button } from "react-native";
+import { StyleSheet, Text, View, Button, ScrollView } from "react-native";
 
 import Message from "../../components/message/message.component";
 import MessageHeader from "../../components/message-header/message-header.component";
@@ -8,16 +8,23 @@ import MessageHeader from "../../components/message-header/message-header.compon
 export default function MessagingScreen({ navigation, route }) {
 	const { groupName } = route.params;
 
-	const currentUser = "555";
+	const currentUserId = "555";
 	// dummy data at the end
 	return (
 		<View style={styles.container}>
 			<MessageHeader groupName={groupName} navigation={navigation} />
-			{lastMessages.map(({ id, content, user, timeStamp }) => (
-				<Message key={id} content={content} user={user} timeStamp={timeStamp} />
-			))}
+			<ScrollView style={{ width: "100%" }}>
+				{lastMessages.map(({ id, content, user, timeStamp }) => (
+					<Message
+						key={id}
+						content={content}
+						user={user}
+						timeStamp={timeStamp}
+						currentUserId={currentUserId}
+					/>
+				))}
+			</ScrollView>
 			<StatusBar style="auto" />
-			<Button title="Back" onPress={() => navigation.goBack()} />
 		</View>
 	);
 }
