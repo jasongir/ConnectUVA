@@ -1,12 +1,13 @@
 import { StatusBar } from "expo-status-bar";
 import React, { useEffect, useState } from "react";
-import { StyleSheet, Text, View, ScrollView } from "react-native";
+import { StyleSheet, Text, View, ScrollView, Pressable } from "react-native";
 import Ionicons from "@expo/vector-icons/Ionicons";
 
 import GroupListItem from "../../components/group-list-item/group-list-item.component";
 
-import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import { headerTopPadding } from "../../misc/styleConstants";
+import { headerTopPadding, pressedColor } from "../../misc/styleConstants";
+
+import { SearchBar } from "react-native-elements";
 
 const groups = Array(10)
 	.fill()
@@ -22,24 +23,67 @@ const groups = Array(10)
 
 export default function Groups({ navigation }) {
 	const [searching, setSearching] = useState(false);
+	const [searchValue, setSearchValue] = useState("");
+
+	const updateSearchValue = (value) => {
+		setSearchValue(value);
+	};
+	const updateSearching = () => {
+		setSearching(!searching);
+	};
 
 	return (
 		<View style={styles.container}>
-			<View style={styles.header}>
-				<Text style={styles.title}>Groups</Text>
-				<Ionicons name="search-outline" size={styles.title.fontSize} />
+			<View style={styles.headerContainer}>
+				<View style={styles.header}>
+					<Text style={styles.title}>Groups</Text>
+					<Pressable
+						onPress={updateSearching}
+						style={({ pressed }) => [
+							{
+								backgroundColor: pressed ? pressedColor : "white",
+							},
+							styles.searchBtn,
+						]}
+					>
+						{searching ? (
+							<>
+								<Ionicons name={"close"} size={styles.title.fontSize} />
+								<Text>close</Text>
+							</>
+						) : (
+							<>
+								<Ionicons
+									name={"search-outline"}
+									size={styles.title.fontSize}
+								/>
+							</>
+						)}
+					</Pressable>
+				</View>
+				{searching ? (
+					<SearchBar
+						placeholder="search for a group..."
+						onChangeText={updateSearchValue}
+						value={searchValue}
+					/>
+				) : null}
 			</View>
 			<ScrollView style={{ width: "100%" }}>
-				{groups.map(({ name, lastText, avatar, unreadMessageNumber }) => (
-					<GroupListItem
-						key={name}
-						name={name}
-						lastText={lastText}
-						avatar={avatar}
-						unreadMessageNumber={unreadMessageNumber}
-						navigation={navigation}
-					/>
-				))}
+				{groups
+					.filter((group) => {
+						return group.name.includes(searchValue.toLowerCase());
+					})
+					.map(({ name, lastText, avatar, unreadMessageNumber }) => (
+						<GroupListItem
+							key={name}
+							name={name}
+							lastText={lastText}
+							avatar={avatar}
+							unreadMessageNumber={unreadMessageNumber}
+							navigation={navigation}
+						/>
+					))}
 			</ScrollView>
 			<StatusBar style="auto" />
 		</View>
@@ -53,8 +97,10 @@ const styles = StyleSheet.create({
 		alignItems: "center",
 		justifyContent: "center",
 	},
+	headerContainer: {
+		width: "100%",
+	},
 	header: {
-		display: "flex",
 		flexDirection: "row",
 		justifyContent: "space-between",
 		alignItems: "baseline",
@@ -66,5 +112,9 @@ const styles = StyleSheet.create({
 	title: {
 		fontSize: 30,
 		fontWeight: "700",
+	},
+	searchBtn: {
+		padding: 7,
+		borderRadius: 99,
 	},
 });
