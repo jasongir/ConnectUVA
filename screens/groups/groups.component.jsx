@@ -1,13 +1,12 @@
 import { StatusBar } from "expo-status-bar";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { StyleSheet, Text, View, ScrollView } from "react-native";
 import Ionicons from "@expo/vector-icons/Ionicons";
 
 import GroupListItem from "../../components/group-list-item/group-list-item.component";
 
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-
-const Stack = createNativeStackNavigator();
+import { headerTopPadding } from "../../misc/styleConstants";
 
 const groups = Array(10)
 	.fill()
@@ -15,21 +14,22 @@ const groups = Array(10)
 		name: `group ${idx}`,
 		lastText: {
 			text: `last message in ${idx}`,
-			dateStamp: new Date().toLocaleDateString(),
-			timeStamp: new Date().toLocaleTimeString(),
+			timeStamp: new Date(),
 		},
 		avatar: null,
-		unreadMessageNumber: 1,
+		unreadMessageNumber: Math.floor(Math.random() * 7),
 	}));
 
 export default function Groups({ navigation }) {
+	const [searching, setSearching] = useState(false);
+
 	return (
 		<View style={styles.container}>
 			<View style={styles.header}>
 				<Text style={styles.title}>Groups</Text>
 				<Ionicons name="search-outline" size={styles.title.fontSize} />
 			</View>
-			<ScrollView>
+			<ScrollView style={{ width: "100%" }}>
 				{groups.map(({ name, lastText, avatar, unreadMessageNumber }) => (
 					<GroupListItem
 						key={name}
@@ -37,7 +37,7 @@ export default function Groups({ navigation }) {
 						lastText={lastText}
 						avatar={avatar}
 						unreadMessageNumber={unreadMessageNumber}
-						onPress={() => navigation.push("MessagingScreen")}
+						navigation={navigation}
 					/>
 				))}
 			</ScrollView>
@@ -59,12 +59,12 @@ const styles = StyleSheet.create({
 		justifyContent: "space-between",
 		alignItems: "baseline",
 		width: "100%",
-		paddingTop: 60,
+		paddingTop: headerTopPadding,
 		paddingBottom: 20,
 		paddingHorizontal: 30,
 	},
 	title: {
 		fontSize: 30,
-		fontWeight: "800",
+		fontWeight: "700",
 	},
 });

@@ -5,8 +5,8 @@ import { Avatar } from "react-native-elements";
 
 
 import { ListItem, Icon, Input } from 'react-native-elements'
-import Ionicons from "@expo/vector-icons/Ionicons";
 
+import Ionicons from "@expo/vector-icons/Ionicons";
 
 export default function Profile({ navigation }) {
 	const groupPress = () => {
@@ -14,12 +14,11 @@ export default function Profile({ navigation }) {
 	};
 
 	const accountPress = () => {
-		navigation.push("InfoForm")
-	}
+		navigation.push("InfoForm");
+	};
 	return (
-
-
 		<View style={styles.container}>
+
 			<View style={styles.header}>
 				<Text style={styles.title}>Profile</Text>
 			</View>
@@ -30,6 +29,7 @@ export default function Profile({ navigation }) {
 			<View style={styles.avatar}>
 				<Avatar size="xlarge" rounded source={{ uri: 'https://s3.amazonaws.com/uifaces/faces/twitter/adhamdannaway/128.jpgs' }} title="SG" />
 
+
 			</View>
 
 			<View style={styles.text}>
@@ -37,50 +37,48 @@ export default function Profile({ navigation }) {
 			</View>
 
 
-			
 			<View style={styles.list}>
-
-
-				<ListItem key='account' bottomDivider onPress={accountPress}>
-					<Icon name='person-outline' type='ionicon' />
+				<ListItem key="account" bottomDivider onPress={accountPress}>
+					<Icon name="person-outline" type="ionicon" />
 					<ListItem.Content>
 						<ListItem.Title>Account</ListItem.Title>
 					</ListItem.Content>
 					<ListItem.Chevron />
 				</ListItem>
 
-				<ListItem key='groups' bottomDivider onPress={groupPress}>
-					<Icon name='people-outline' type='ionicon' />
+				<ListItem key="groups" bottomDivider onPress={groupPress}>
+					<Icon name="people-outline" type="ionicon" />
 					<ListItem.Content>
 						<ListItem.Title>Manage Groups</ListItem.Title>
 					</ListItem.Content>
 					<ListItem.Chevron />
 				</ListItem>
 
-				<ListItem key='notifications' bottomDivider>
-					<Icon name='notifications-outline' type='ionicon' />
+				<ListItem key="notifications" bottomDivider>
+					<Icon name="notifications-outline" type="ionicon" />
 					<ListItem.Content>
 						<ListItem.Title>Notifications</ListItem.Title>
 					</ListItem.Content>
 					<ListItem.Chevron />
 				</ListItem>
 
-				<ListItem key='privacy' bottomDivider>
-					<Icon name='lock-closed-outline' type='ionicon' />
+				<ListItem key="privacy" bottomDivider>
+					<Icon name="lock-closed-outline" type="ionicon" />
 					<ListItem.Content>
 						<ListItem.Title>Privacy</ListItem.Title>
 					</ListItem.Content>
 					<ListItem.Chevron />
 				</ListItem>
 
+
 				<Input
 					placeholder='BASIC INPUT'
 				/>
+
 			</View>
 			
 			</ScrollView>
 		</View>
-		
 
 	);
 }
@@ -90,10 +88,9 @@ const styles = StyleSheet.create({
 
 		flex: 1,
 		backgroundColor: "#fff",
-
 	},
 	list: {
-		flex: .7,
+		flex: 0.7,
 		backgroundColor: "#fff",
 		justifyContent: "center",
 	},
@@ -101,7 +98,7 @@ const styles = StyleSheet.create({
 		//flex: 1,
 		justifyContent: "flex-start",
 		alignItems: "center",
-		padding: 50
+		padding: 50,
 	},
 	text: {
 		alignItems: "center",
@@ -111,6 +108,7 @@ const styles = StyleSheet.create({
 		fontSize: 30,
 		//fontWeight: "bold"
 	},
+
 	title: {
 		fontSize: 30,
 		fontWeight: "800",
