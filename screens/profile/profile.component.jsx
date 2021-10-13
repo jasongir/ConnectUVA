@@ -14,7 +14,7 @@ export default function Profile({ navigation }) {
 	};
 
 	const accountPress = () => {
-		navigation.push("InfoForm");
+		navigation.push("MyProfile");
 	};
 	return (
 		<View style={styles.container}>
@@ -71,10 +71,7 @@ export default function Profile({ navigation }) {
 				</ListItem>
 
 
-				<Input
-					placeholder='BASIC INPUT'
-				/>
-
+			
 			</View>
 			
 			</ScrollView>
