@@ -2,7 +2,7 @@ import React from "react";
 import { StyleSheet, Text, View } from "react-native";
 
 // Passed in an actual picture or the name (inserts initials)
-const Avatar = ({ avatar, name, size }) => {
+const Avatar = ({ avatar, name, size, textColor }) => {
 	const initials = name
 		.split(" ")
 		.map((word) => word.charAt(0))
@@ -17,7 +17,15 @@ const Avatar = ({ avatar, name, size }) => {
 		<View
 			style={[styles.placeholder, size ? { width: size, height: size } : {}]}
 		>
-			<Text>{initials}</Text>
+			<Text
+				style={[
+					styles.text,
+					size ? { fontSize: Math.floor((size * 16) / 50) } : null,
+					textColor ? { color: textColor } : null,
+				]}
+			>
+				{initials}
+			</Text>
 		</View>
 	);
 };
@@ -40,5 +48,8 @@ const styles = StyleSheet.create({
 		display: "flex",
 		alignItems: "center",
 		justifyContent: "center",
+	},
+	text: {
+		fontSize: 16,
 	},
 });

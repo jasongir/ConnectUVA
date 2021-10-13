@@ -1,95 +1,78 @@
 import { StatusBar } from "expo-status-bar";
-import React, {useState} from "react";
-import { StyleSheet, Text, View, Button, ScrollView, Alert, KeyboardAvoidingView, DatePickerIOS, Pressable } from "react-native";
+import React, { useState } from "react";
+import {
+	StyleSheet,
+	Text,
+	View,
+	Button,
+	ScrollView,
+	Alert,
+	KeyboardAvoidingView,
+	DatePickerIOS,
+	Pressable,
+} from "react-native";
 //import { Avatar } from "react-native-elements";
-import Avatar from "/Users/samgalletta/Documents/GitHub/ConnectUVA/components/avatar/avatar.component.jsx";
+import Avatar from "../../components/avatar/avatar.component";
 
-
-import { ListItem, Icon, Input } from 'react-native-elements'
+import { ListItem, Icon, Input } from "react-native-elements";
 
 import Ionicons from "@expo/vector-icons/Ionicons";
 
 export default function myProfile({ navigation }) {
-
 	const savePress = () => {
-		Alert.alert('Changes have been saved');
+		Alert.alert("Changes have been saved");
 		navigation.pop();
 	};
 
 	const showDatePicker = () => {
-		return(
-			<DatePickerIOS
-				value={date}
-				mode='date'
-				onChange={onChange}
-			/>
-		)
-	}
+		return <DatePickerIOS value={date} mode="date" onChange={onChange} />;
+	};
 
 	account = {
 		name: "Sam Galletta",
 		dob: "09/06/2000",
-		email: "sjg7egt@virginia.edu"
-	}
+		email: "sjg7egt@virginia.edu",
+	};
 
 	return (
 		<View style={styles.container}>
-
 			<View style={styles.header}>
 				<Text style={styles.title}>Account</Text>
 			</View>
 			<KeyboardAvoidingView behavior={"padding"} style={{ flex: 1 }}>
 				<ScrollView>
-
-
 					<View style={styles.avatar}>
-					<Avatar style={styles.largeAvatar} avatar="" name="Sam Galletta" />
-
-
+						<Avatar style={styles.largeAvatar} avatar="" name="Sam Galletta" />
 					</View>
 
 					<Input
 						placeholder={account.name}
-						autoCapitalize='words'
-						label='Full Name'
+						autoCapitalize="words"
+						label="Full Name"
 					/>
 					<Input
 						placeholder={account.email}
-						textContentType='emailAddress'
-						label='e-mail'
+						textContentType="emailAddress"
+						label="e-mail"
 					/>
 
-	
-					<Input
-
-						placeholder={account.dob}
-						label='Birthdate'
-					/>
+					<Input placeholder={account.dob} label="Birthdate" />
 
 					<Input
-
-						placeholder='password'
+						placeholder="password"
 						secureTextEntry={true}
-						label='Change Password'
+						label="Change Password"
 					/>
 
-					<Button
-						title="Apply Changes"
-						onPress={savePress}
-					/>
-
-
+					<Button title="Apply Changes" onPress={savePress} />
 				</ScrollView>
 			</KeyboardAvoidingView>
-
 		</View>
-
 	);
 }
 
 const styles = StyleSheet.create({
 	container: {
-
 		flex: 1,
 		backgroundColor: "#fff",
 	},
@@ -127,6 +110,4 @@ const styles = StyleSheet.create({
 		paddingBottom: 20,
 		paddingHorizontal: 30,
 	},
-	
 });
-
