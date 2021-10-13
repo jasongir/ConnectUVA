@@ -2,7 +2,7 @@ import React from "react";
 import { StyleSheet, Text, View } from "react-native";
 
 // Passed in an actual picture or the name (inserts initials)
-const Avatar = ({ avatar, name }) => {
+const Avatar = ({ avatar, name, size }) => {
 	const initials = name
 		.split(" ")
 		.map((word) => word.charAt(0))
@@ -10,9 +10,13 @@ const Avatar = ({ avatar, name }) => {
 		.toUpperCase();
 
 	return avatar ? ( // if we get info passed about an actual picture:
-		<View style={styles.avatar}></View>
+		<View style={[styles.avatar, size ? { width: size, height: size } : {}]}>
+			{avatar}
+		</View>
 	) : (
-		<View style={styles.placeholder}>
+		<View
+			style={[styles.placeholder, size ? { width: size, height: size } : {}]}
+		>
 			<Text>{initials}</Text>
 		</View>
 	);
