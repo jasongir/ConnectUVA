@@ -34,6 +34,7 @@ export default function myProfile({ navigation }) {
 		email: "sjg7egt@virginia.edu",
 	};
 
+	const size = 150;
 	return (
 		<View style={styles.container}>
 			<View style={styles.header}>
@@ -43,7 +44,7 @@ export default function myProfile({ navigation }) {
 				<ScrollView>
 					<View style={styles.avatar}>
 
-					<Avatar style={styles.largeAvatar} name="Sam Galletta" />
+					<Avatar style={styles.avatar} name="Sam Galletta" size={size} />
 
 
 
