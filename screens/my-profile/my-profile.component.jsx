@@ -2,7 +2,7 @@ import { StatusBar } from "expo-status-bar";
 import React, {useState} from "react";
 import { StyleSheet, Text, View, Button, ScrollView, Alert, KeyboardAvoidingView, DatePickerIOS, Pressable } from "react-native";
 //import { Avatar } from "react-native-elements";
-import Avatar from "/Users/samgalletta/Documents/GitHub/ConnectUVA/components/avatar/avatar.component.jsx";
+import Avatar from "../../components/avatar/avatar.component";
 
 
 import { ListItem, Icon, Input } from 'react-native-elements'
@@ -43,7 +43,7 @@ export default function myProfile({ navigation }) {
 
 
 					<View style={styles.avatar}>
-					<Avatar style={styles.largeAvatar} avatar="" name="Sam Galletta" />
+					<Avatar style={styles.largeAvatar} name="Sam Galletta" />
 
 
 					</View>

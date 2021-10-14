@@ -10,7 +10,7 @@ import Ionicons from "@expo/vector-icons/Ionicons";
 
 export default function Profile({ navigation }) {
 	const groupPress = () => {
-		navigation.push("MainApp");
+		navigation.push("GroupManagement");
 	};
 
 	const accountPress = () => {

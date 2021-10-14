@@ -14,6 +14,7 @@ import VerificationCode from "./screens/verification-code/verification-code.comp
 import SetupName from "./screens/setup-name/setup-name.component";
 import InfoForm from "./screens/information-form/information-form.component";
 import myProfile from "./screens/my-profile/my-profile.component";
+import GroupManagement from "./screens/group-management/group-management.component";
 import MainApp from "./screens/main-app/main-app.component";
 
 const Stack = createNativeStackNavigator();
@@ -67,6 +68,11 @@ export default function App() {
 					<Stack.Screen
 						name="MyProfile"
 						component={myProfile}
+						options={globalOptions}
+					/>
+					<Stack.Screen
+						name="GroupManagement"
+						component={GroupManagement}
 						options={globalOptions}
 					/>
 						
