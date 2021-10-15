@@ -89,7 +89,7 @@ export default function PrivacyPolicy({ navigation }) {
 					by uninstalling the Application. You may use the standard uninstall
 					processes as may be available as part of your mobile device or via the
 					mobile application marketplace or network. You can also request to
-					opt-out via email, at connectuva.privacy@gmail.com.
+					opt-out via email, at connectuva.app@gmail.com.
 				</Text>
 
 				<Text style={styles.boldtext}>
@@ -102,9 +102,9 @@ export default function PrivacyPolicy({ navigation }) {
 					Automatically Collected information for up to 12 months and thereafter
 					may store it in aggregate. If you’d like us to delete User Provided
 					Data that you have provided via the Application, please contact us at
-					connectuva@gmail.com and we will respond in a reasonable time. Please
-					note that some or all of the User Provided Data may be required in
-					order for the Application to function properly.
+					connectuva.app@gmail.com and we will respond in a reasonable time.
+					Please note that some or all of the User Provided Data may be required
+					in order for the Application to function properly.
 				</Text>
 
 				<Text style={styles.boldtext}>Children</Text>
@@ -113,8 +113,8 @@ export default function PrivacyPolicy({ navigation }) {
 					We do not use the Application to knowingly solicit data from or market
 					to children under the age of 13. If a parent or guardian becomes aware
 					that his or her child has provided us with information without their
-					consent, he or she should contact us at connectuva@gmail.com. We will
-					delete such information from our files within a reasonable time.
+					consent, he or she should contact us at connectuva.app@gmail.com. We
+					will delete such information from our files within a reasonable time.
 				</Text>
 
 				<Text style={styles.boldtext}>Security</Text>
@@ -160,7 +160,7 @@ export default function PrivacyPolicy({ navigation }) {
 				<Text style={{ padding: 20 }}>
 					If you have any questions regarding privacy while using the
 					Application, or have questions about our practices, please contact us
-					via email at connectuva@gmail.com.
+					via email at connectuva.app@gmail.com.
 				</Text>
 			</ScrollView>
 		</View>
