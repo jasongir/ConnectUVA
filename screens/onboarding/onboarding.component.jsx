@@ -1,6 +1,6 @@
 import { StatusBar } from "expo-status-bar";
 import React, { useContext } from "react";
-import { StyleSheet, Text, View, Button } from "react-native";
+import { StyleSheet, Text, View, Button, Image, Pressable } from "react-native";
 
 export default function Onboarding({ navigation }) {
 	const nextPress = () => {
@@ -8,9 +8,17 @@ export default function Onboarding({ navigation }) {
 	};
 	return (
 		<View style={styles.container}>
-			<Text style={styles.text}>Onboarding Screen</Text>
+			<Text style={styles.title}>Sign up for ConnectUVA</Text>
+			<Text style={styles.subtitle}>Create an account and join your first UVA group!</Text>
 			<StatusBar style="auto" />
-			<Button title="next" onPress={nextPress} />
+			<Image
+				style={styles.uvalogo}
+				source={require('../../assets/images/uva_logo2.png')}
+			/>
+
+			<Pressable style={styles.roundButton1} onPress={nextPress}>
+  			<Text style={styles.buttonText}>Continue with phone</Text>
+			</Pressable>
 		</View>
 	);
 }
@@ -22,5 +30,38 @@ const styles = StyleSheet.create({
 		alignItems: "center",
 		justifyContent: "center",
 	},
-	text: {},
+	title: {
+		fontSize: 32,
+		fontWeight: "800",
+		top: "-7%",
+		textAlign: "center",
+		paddingHorizontal: 50,
+	},
+	subtitle: {
+		fontSize: 18,
+		fontWeight: "800",
+		top: "35%",
+		opacity: 0.4,
+		paddingHorizontal: 50,
+		textAlign: "center",
+	},
+	buttonText: {
+		color: 'white',
+		textAlign: "center",
+		fontSize: 18
+	},
+	roundButton1: {
+		backgroundColor: "black",
+    padding: 18,
+    borderRadius: 30,
+		elevation: 5,
+		width: "80%",
+		height: 60,
+		top: "16%"
+  },
+	uvalogo: {
+		width: "80%",
+		height: 225,
+		top: "-5%"
+  },
 });

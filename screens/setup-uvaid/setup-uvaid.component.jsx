@@ -2,9 +2,9 @@ import { StatusBar } from "expo-status-bar";
 import React from "react";
 import { StyleSheet, Text, View, Button, TextInput, Pressable } from "react-native";
 
-export default function SetupName({ navigation }) {
+export default function SetupUVAID({ navigation }) {
 	const nextPress = () => {
-		navigation.push("SetupUVAID");
+		navigation.push("SetupPhoto");
 	};
 	const prevPress = () => {
 		navigation.goBack();
@@ -12,14 +12,14 @@ export default function SetupName({ navigation }) {
 	const [textInputValue, setTextInputValue] = React.useState('');
 	return (
 		<View style={styles.container}>
-			<Text style={styles.title}>What's your name?</Text>
+			<Text style={styles.title}>What's your UVA computer ID?</Text>
 			<StatusBar style="auto" />
 
 			<TextInput
-      style={styles.nameInput}
+      style={styles.IDInput}
       onChangeText={text => setTextInputValue(text)}
       value={textInputValue}
-	  	placeholder="i.e. John Doe"
+	  	placeholder="i.e. abc1de"
     	/>
 			<Pressable style={styles.roundButton1} onPress={nextPress}>
 				<Text style={styles.buttonText}>Submit</Text>
@@ -72,7 +72,7 @@ const styles = StyleSheet.create({
 		top: "38%",
 		left: "-35%"
   },
-	nameInput: {
+	IDInput: {
 		height: 50,
 		width: "55%",
 		top: "-10%",

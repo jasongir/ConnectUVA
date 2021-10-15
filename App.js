@@ -14,7 +14,10 @@ import VerificationCode from "./screens/verification-code/verification-code.comp
 import SetupName from "./screens/setup-name/setup-name.component";
 import InfoForm from "./screens/information-form/information-form.component";
 import myProfile from "./screens/my-profile/my-profile.component";
+import GroupManagement from "./screens/group-management/group-management.component";
 import MainApp from "./screens/main-app/main-app.component";
+import PrivacyPolicy from "./screens/privacy-policy/privacy-policy.component";
+import GroupSearch from "./screens/group-search/group-search.component";
 
 const Stack = createNativeStackNavigator();
 
@@ -33,7 +36,7 @@ export default function App() {
 	else
 		return (
 			<NavigationContainer>
-				<Stack.Navigator initialRouteName="MainApp">
+				<Stack.Navigator initialRouteName="Onboarding">
 					<Stack.Screen
 						name="Onboarding"
 						component={Onboarding}
@@ -67,6 +70,21 @@ export default function App() {
 					<Stack.Screen
 						name="MyProfile"
 						component={myProfile}
+						options={globalOptions}
+					/>
+					<Stack.Screen
+						name="GroupManagement"
+						component={GroupManagement}
+						options={globalOptions}
+					/>
+					<Stack.Screen
+						name="PrivacyPolicy"
+						component={PrivacyPolicy}
+						options={globalOptions}
+					/>
+					<Stack.Screen
+						name="GroupSearch"
+						component={GroupSearch}
 						options={globalOptions}
 					/>
 				</Stack.Navigator>
