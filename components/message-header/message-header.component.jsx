@@ -1,5 +1,5 @@
 import React from "react";
-import { StyleSheet, Text, View, Pressable } from "react-native";
+import { StyleSheet, Text, View, Pressable, Alert } from "react-native";
 
 import Ionicons from "@expo/vector-icons/Ionicons";
 
@@ -8,7 +8,7 @@ import { headerTopPadding } from "../../misc/styleConstants";
 
 const MessageHeader = ({ groupName, navigation }) => {
 	const goBack = () => navigation.goBack();
-	const moreGroupInfo = () => console.log("that doesn't work yet");
+	const moreGroupInfo = () => Alert.alert("That does not work yet.");
 
 	return (
 		<View style={styles.header}>

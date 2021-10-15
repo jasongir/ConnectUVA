@@ -11,8 +11,10 @@ import {
 	Keyboard,
 	Platform,
 	TextInput,
-	Alert,
+	Pressable,
 } from "react-native";
+
+import { useFocusEffect } from "@react-navigation/native";
 
 import SendButton from "../../components/send-button/send-button.component";
 import Message from "../../components/message/message.component";
@@ -55,6 +57,10 @@ export default function MessagingScreen({ navigation, route }) {
 		};
 	}, []);
 
+	useFocusEffect(() => {
+		scrollRef.current.scrollToEnd({ animated: true, duration: 300 });
+	});
+
 	useEffect(() => {
 		scrollRef.current.scrollToEnd({ animated: true, duration: 300 });
 	}, [messages]);
@@ -92,42 +98,41 @@ export default function MessagingScreen({ navigation, route }) {
 			behavior={Platform.OS === "ios" ? "padding" : "height"}
 			style={styles.container}
 		>
-			<TouchableWithoutFeedback
-				onPress={Keyboard.dismiss}
-				style={styles.container}
-			>
-				<View style={styles.whiteContainer}>
-					<MessageHeader groupName={groupName} navigation={navigation} />
-					<ScrollView style={{ width: "100%" }} ref={scrollRef}>
-						<View>
-							{messages.map(({ id, content, user, timeStamp }) => (
-								<Message
-									key={id}
-									content={content}
-									user={user}
-									timeStamp={timeStamp}
-									currentUserId={currentUserId}
-								/>
-							))}
-						</View>
-					</ScrollView>
-					<View style={styles.textInputContainer}>
-						<TextInput
-							onChangeText={onInputChange}
-							value={inputVal}
-							placeholder="Enter a message..."
-							style={styles.textInput}
-							multiline
-							onSubmitEditing={Keyboard.dismiss}
-						/>
-						<SendButton fontSize={20} callback={onSend} />
-					</View>
-					<StatusBar style="auto" />
+			<View style={styles.whiteContainer}>
+				<MessageHeader groupName={groupName} navigation={navigation} />
+				<ScrollView style={{ width: "100%" }} ref={scrollRef}>
+					<Pressable onPress={Keyboard.dismiss}>
+						{messages.map(({ id, content, user, timeStamp }) => (
+							<Message
+								key={id}
+								content={content}
+								user={user}
+								timeStamp={timeStamp}
+								currentUserId={currentUserId}
+							/>
+						))}
+					</Pressable>
+				</ScrollView>
+				<View style={styles.textInputContainer}>
+					<TextInput
+						onChangeText={onInputChange}
+						value={inputVal}
+						placeholder="Enter a message..."
+						style={styles.textInput}
+						multiline
+						onSubmitEditing={Keyboard.dismiss}
+					/>
+					<SendButton fontSize={20} callback={onSend} />
 				</View>
-			</TouchableWithoutFeedback>
+				<StatusBar style="auto" />
+			</View>
 		</KeyboardAvoidingView>
 	);
 }
+// <TouchableWithoutFeedback
+// 	onPress={Keyboard.dismiss}
+// 	style={styles.container}
+// ></TouchableWithoutFeedback>;
 
 const styles = StyleSheet.create({
 	container: {
