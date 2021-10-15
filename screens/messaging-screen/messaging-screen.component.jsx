@@ -1,5 +1,5 @@
 import { StatusBar } from "expo-status-bar";
-import React, { useCallback, useState, useEffect } from "react";
+import React, { useCallback, useState, useEffect, useRef } from "react";
 import {
 	StyleSheet,
 	Text,
@@ -21,12 +21,12 @@ import MessageHeader from "../../components/message-header/message-header.compon
 export default function MessagingScreen({ navigation, route }) {
 	const { groupName } = route.params;
 
+	// ref for the scrollview
+	const scrollRef = useRef(null);
+
 	const [inputVal, setInputVal] = useState("");
 	const [messages, setMessages] = useState([]);
 	const [keyboardShown, setKeyboardShown] = useState(false);
-	const [scrollOffset, setScrollOffset] = useState({ x: 0, y: 0 });
-
-	const scrollToBottom = () => setScrollOffset({ x: 0, y: 0 });
 
 	// effects run at beginning of mount:
 	useEffect(() => {
@@ -34,16 +34,19 @@ export default function MessagingScreen({ navigation, route }) {
 		setMessages(lastMessages);
 		// add listeners to our keyboard
 		const showSubscription = Keyboard.addListener("keyboardDidShow", () => {
-			console.log("keyboard showing");
+			// console.log("keyboard showing");
 			setKeyboardShown(true);
 			// Alert.alert("YOU OPENED THE KEYBOARD");
 		});
 
 		const hideSubscription = Keyboard.addListener("keyboardDidHide", () => {
-			console.log("Keyboard hiddedn");
+			// console.log("Keyboard hiddedn");
 			setKeyboardShown(false);
 			// Alert.alert("YOU CLOSED THE KEYBOARD");
 		});
+
+		// on initial render, scroll to end
+		scrollRef.current.scrollToEnd({ animated: true, duration: 300 });
 
 		// clean up the listeners we added
 		return () => {
@@ -51,6 +54,10 @@ export default function MessagingScreen({ navigation, route }) {
 			hideSubscription.remove();
 		};
 	}, []);
+
+	useEffect(() => {
+		scrollRef.current.scrollToEnd({ animated: true, duration: 300 });
+	}, [messages]);
 
 	const onInputChange = (text) => {
 		setInputVal(text);
@@ -91,7 +98,7 @@ export default function MessagingScreen({ navigation, route }) {
 			>
 				<View style={styles.whiteContainer}>
 					<MessageHeader groupName={groupName} navigation={navigation} />
-					<ScrollView style={{ width: "100%" }}>
+					<ScrollView style={{ width: "100%" }} ref={scrollRef}>
 						<View>
 							{messages.map(({ id, content, user, timeStamp }) => (
 								<Message
