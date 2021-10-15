@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { StatusBar } from "expo-status-bar";
-import { StyleSheet, Text, View, Button } from "react-native";
+import { StyleSheet, Text, View, Button, Platform } from "react-native";
 import Ionicons from "@expo/vector-icons/Ionicons";
 
 import { NavigationContainer } from "@react-navigation/native";
@@ -40,7 +40,8 @@ export default function MainApp() {
 					...globalOptions,
 					tabBarLabel: "Groups",
 					title: "Groups",
-					tabBarHideOnKeyboard: true,
+					// hide tab bars when keyboard open, but only for Android
+					tabBarHideOnKeyboard: Platform.OS === "android",
 				})}
 			/>
 			<Tab.Screen name="Search" component={Search} options={globalOptions} />
