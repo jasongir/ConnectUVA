@@ -69,7 +69,6 @@ export default function App() {
 						component={myProfile}
 						options={globalOptions}
 					/>
-						
 				</Stack.Navigator>
 			</NavigationContainer>
 		);
