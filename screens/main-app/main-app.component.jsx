@@ -40,7 +40,7 @@ export default function MainApp() {
 					...globalOptions,
 					tabBarLabel: "Groups",
 					title: "Groups",
-					tabBarHideOnKeyboard: true,
+					// tabBarHideOnKeyboard: true,
 				})}
 			/>
 			<Tab.Screen name="Search" component={Search} options={globalOptions} />
