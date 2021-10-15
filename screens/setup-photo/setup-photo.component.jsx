@@ -4,7 +4,7 @@ import { StyleSheet, Text, View, Button, Image, Pressable } from "react-native";
 
 export default function SetupPhoto({ navigation }) {
 	const nextPress = () => {
-		navigation.push("InfoForm");
+		navigation.push("MainApp");
 	};
 	const prevPress = () => {
 		navigation.goBack();
@@ -17,7 +17,7 @@ export default function SetupPhoto({ navigation }) {
 
 			<Image
 				style={styles.addPhoto}
-				source={require('../../assets/images/AddProfilePhoto.png')}
+				source={require("../../assets/images/AddProfilePhoto.png")}
 			/>
 
 			<Pressable style={styles.roundButton1} onPress={nextPress}>
@@ -53,24 +53,24 @@ const styles = StyleSheet.create({
 	},
 	addPhoto: {
 		width: "35%",
-		height: "20%"
+		height: "20%",
 	},
 	roundButton1: {
 		backgroundColor: "black",
-    padding: 18,
-    borderRadius: 30,
+		padding: 18,
+		borderRadius: 30,
 		elevation: 5,
 		width: "80%",
 		height: 60,
-		top: "10%"
-  },
+		top: "10%",
+	},
 	buttonText: {
-		color: 'white',
+		color: "white",
 		textAlign: "center",
-		fontSize: 18
+		fontSize: 18,
 	},
 	goBack: {
 		top: "29.5%",
-		left: "-35%"
-  },
+		left: "-35%",
+	},
 });

@@ -12,6 +12,8 @@ import Onboarding from "./screens/onboarding/onboarding.component";
 import PhoneVerification from "./screens/phone-verification/phone-verification.component";
 import VerificationCode from "./screens/verification-code/verification-code.component";
 import SetupName from "./screens/setup-name/setup-name.component";
+import SetupUVAID from "./screens/setup-uvaid/setup-uvaid.component";
+import SetupPhoto from "./screens/setup-photo/setup-photo.component";
 import InfoForm from "./screens/information-form/information-form.component";
 import myProfile from "./screens/my-profile/my-profile.component";
 import GroupManagement from "./screens/group-management/group-management.component";
@@ -58,10 +60,21 @@ export default function App() {
 						options={globalOptions}
 					/>
 					<Stack.Screen
+						name="SetupUVAID"
+						component={SetupUVAID}
+						options={globalOptions}
+					/>
+					<Stack.Screen
+						name="SetupPhoto"
+						component={SetupPhoto}
+						options={globalOptions}
+					/>
+					{/*
+					<Stack.Screen
 						name="InfoForm"
 						component={InfoForm}
 						options={globalOptions}
-					/>
+					/> */}
 					<Stack.Screen
 						name="MainApp"
 						component={MainApp}
