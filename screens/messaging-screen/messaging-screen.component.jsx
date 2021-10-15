@@ -1,60 +1,139 @@
 import { StatusBar } from "expo-status-bar";
 import React, { useCallback, useState, useEffect } from "react";
-import { StyleSheet, Text, View, Button, ScrollView } from "react-native";
-import { GiftedChat } from "react-native-gifted-chat";
+import {
+	StyleSheet,
+	Text,
+	View,
+	Button,
+	ScrollView,
+	KeyboardAvoidingView,
+	TouchableWithoutFeedback,
+	Keyboard,
+	Platform,
+	TextInput,
+	Alert,
+} from "react-native";
 
+import SendButton from "../../components/send-button/send-button.component";
 import Message from "../../components/message/message.component";
 import MessageHeader from "../../components/message-header/message-header.component";
 
 export default function MessagingScreen({ navigation, route }) {
 	const { groupName } = route.params;
 
+	const [inputVal, setInputVal] = useState("");
 	const [messages, setMessages] = useState([]);
+	const [keyboardShown, setKeyboardShown] = useState(false);
+	const [scrollOffset, setScrollOffset] = useState({ x: 0, y: 0 });
+
+	const scrollToBottom = () => setScrollOffset({ x: 0, y: 0 });
+
+	// effects run at beginning of mount:
 	useEffect(() => {
+		// make our "api call" to our actual messages
 		setMessages(lastMessages);
+		// add listeners to our keyboard
+		const showSubscription = Keyboard.addListener("keyboardDidShow", () => {
+			console.log("keyboard showing");
+			setKeyboardShown(true);
+			// Alert.alert("YOU OPENED THE KEYBOARD");
+		});
+
+		const hideSubscription = Keyboard.addListener("keyboardDidHide", () => {
+			console.log("Keyboard hiddedn");
+			setKeyboardShown(false);
+			// Alert.alert("YOU CLOSED THE KEYBOARD");
+		});
+
+		// clean up the listeners we added
+		return () => {
+			showSubscription.remove();
+			hideSubscription.remove();
+		};
 	}, []);
+
+	const onInputChange = (text) => {
+		setInputVal(text);
+	};
+
+	const onSend = () => {
+		if (inputVal.length > 0) {
+			setMessages([
+				...messages,
+				{
+					id: Math.floor(Math.random() * 1000),
+					content: inputVal,
+					user: {
+						id: currentUserId,
+						firstName: "Jason",
+						lastName: "Bourne",
+					},
+					timeStamp: new Date(),
+				},
+			]);
+
+			setInputVal("");
+			// console.log(messages.map((message) => message?.content));
+		}
+	};
 
 	const currentUserId = "555";
 	// dummy data at the end
-	// return (
-	// 	<View style={styles.container}>
-	// 		<MessageHeader groupName={groupName} navigation={navigation} />
-	// 		<ScrollView style={{ width: "100%" }}>
-	// 			{lastMessages.map(({ id, content, user, timeStamp }) => (
-	// 				<Message
-	// 					key={id}
-	// 					content={content}
-	// 					user={user}
-	// 					timeStamp={timeStamp}
-	// 					currentUserId={currentUserId}
-	// 				/>
-	// 			))}
-	// 		</ScrollView>
-	// 		<StatusBar style="auto" />
-	// 	</View>
-	// );
 
-	const onSend = useCallback((messages = []) => {
-		setMessages((previousMessages) =>
-			GiftedChat.append(previousMessages, messages)
-		);
-	}, []);
 	return (
-		<GiftedChat
-			messages={messages}
-			renderAvater={null}
-			onSend={(messages) => onSend(messages)}
-			user={jasonBourne}
-		/>
+		<KeyboardAvoidingView
+			behavior={Platform.OS === "ios" ? "padding" : "height"}
+			style={styles.container}
+		>
+			<TouchableWithoutFeedback
+				onPress={Keyboard.dismiss}
+				style={styles.container}
+			>
+				<View style={styles.whiteContainer}>
+					<MessageHeader groupName={groupName} navigation={navigation} />
+					<ScrollView style={{ width: "100%" }}>
+						<View>
+							{messages.map(({ id, content, user, timeStamp }) => (
+								<Message
+									key={id}
+									content={content}
+									user={user}
+									timeStamp={timeStamp}
+									currentUserId={currentUserId}
+								/>
+							))}
+						</View>
+					</ScrollView>
+					<View style={styles.textInputContainer}>
+						<TextInput
+							onChangeText={onInputChange}
+							value={inputVal}
+							placeholder="Enter a message..."
+							style={styles.textInput}
+							multiline
+							onSubmitEditing={Keyboard.dismiss}
+						/>
+						<SendButton fontSize={20} callback={onSend} />
+					</View>
+					<StatusBar style="auto" />
+				</View>
+			</TouchableWithoutFeedback>
+		</KeyboardAvoidingView>
 	);
 }
 
 const styles = StyleSheet.create({
 	container: {
 		flex: 1,
-		// backgroundColor: "#fff",
-		// alignItems: "center",
-		// justifyContent: "flex-start",
+		backgroundColor: "#fff",
+		alignItems: "center",
+		justifyContent: "flex-start",
+		width: "100%",
+	},
+	whiteContainer: {
+		backgroundColor: "white",
+		flex: 1,
+		width: "100%",
 	},
 	chatContainer: {
 		borderWidth: 1,
@@ -62,6 +141,19 @@ const styles = StyleSheet.create({
 		borderStyle: "solid",
 		width: "100%",
 		// paddingTop: 300,
+	},
+	textInput: {
+		fontSize: 20,
+		padding: 10,
+		flex: 20,
+		// padding: 23,
+		// margin: 10,
+		// borderWidth: 1,
+		// borderColor: "black",
+		// borderStyle: "solid",
+	},
+	textInputContainer: {
+		flexDirection: "row",
 	},
 });
 
@@ -113,7 +205,7 @@ const [
 		lastName: "Washington",
 	},
 ];
-
+/*
 const lastMessages = [
 	{
 		_id: "1231",
@@ -164,86 +256,87 @@ const lastMessages = [
 		timeStamp: createDate(5, 32),
 	},
 ];
-// const lastMessages = [
-// 	{
-// 		id: "1231",
-// 		content:
-// 			"Lorem ipsum dolor sit, amet consectetur adipisicing elit. Doloribus, facilis?",
-// 		user: {
-// 			id: "111",
-// 			firstName: "John",
-// 			lastName: "Smith",
-// 		},
-// 		timeStamp: createDate(1, 45),
-// 	},
-// 	{
-// 		id: "1232",
-// 		content: "Hi guys! When's HW2 due?",
-// 		user: {
-// 			id: "222",
-// 			firstName: "Anthony",
-// 			lastName: "Charlottesburg",
-// 		},
-// 		timeStamp: createDate(3, 27),
-// 	},
-// 	{
-// 		id: "1233",
-// 		content: "September 13th",
-// 		user: {
-// 			id: "333",
-// 			firstName: "June",
-// 			lastName: "Johnson",
-// 		},
-// 		timeStamp: createDate(4, 11),
-// 	},
-// 	{
-// 		id: "1234",
-// 		content: "What did you use?",
-// 		user: {
-// 			id: "444",
-// 			firstName: "John",
-// 			lastName: "Lee",
-// 		},
-// 		timeStamp: createDate(4, 12),
-// 	},
-// 	{
-// 		id: "1235",
-// 		content: "I used python, but it's slower",
-// 		user: {
-// 			id: "555",
-// 			firstName: "Jason",
-// 			lastName: "Bourne",
-// 		},
-// 		timeStamp: createDate(4, 13),
-// 	},
-// 	{
-// 		id: "1236",
-// 		content: "Okay that makes sense, I've just been using C++",
-// 		user: {
-// 			id: "666",
-// 			firstName: "Jasmine",
-// 			lastName: "Washington",
-// 		},
-// 		timeStamp: createDate(5, 31),
-// 	},
-// 	{
-// 		id: "1237",
-// 		content: "Has anyone been able to do a master theorem proof?",
-// 		user: {
-// 			id: "555",
-// 			firstName: "Jason",
-// 			lastName: "Bourne",
-// 		},
-// 		timeStamp: createDate(5, 35),
-// 	},
-// 	{
-// 		id: "1238",
-// 		content: "It's impossible.",
-// 		user: {
-// 			id: "444",
-// 			firstName: "John",
-// 			lastName: "Lee",
-// 		},
-// 		timeStamp: createDate(5, 32),
-// 	},
-// ];
+*/
+const lastMessages = [
+	{
+		id: "1231",
+		content:
+			"Lorem ipsum dolor sit amet consectetur adipisicing elit. Earum molestias commodi atque corporis error aliquam illo, sint dolores explicabo nobis, nulla ab mollitia sunt temporibus maiores quia iusto facilis eum at consequuntur. Voluptates tempore pariatur obcaecati, neque sed minus sint error aliquid sunt a nisi facilis expedita modi similique ut?",
+		user: {
+			id: "111",
+			firstName: "John",
+			lastName: "Smith",
+		},
+		timeStamp: createDate(1, 45),
+	},
+	{
+		id: "1232",
+		content: "Hi guys! When's HW2 due?",
+		user: {
+			id: "222",
+			firstName: "Anthony",
+			lastName: "Charlottesburg",
+		},
+		timeStamp: createDate(3, 27),
+	},
+	{
+		id: "1233",
+		content: "September 13th",
+		user: {
+			id: "333",
+			firstName: "June",
+			lastName: "Johnson",
+		},
+		timeStamp: createDate(4, 11),
+	},
+	{
+		id: "1234",
+		content: "What did you use?",
+		user: {
+			id: "444",
+			firstName: "John",
+			lastName: "Lee",
+		},
+		timeStamp: createDate(4, 12),
+	},
+	{
+		id: "1235",
+		content: "I used python, but it's slower",
+		user: {
+			id: "555",
+			firstName: "Jason",
+			lastName: "Bourne",
+		},
+		timeStamp: createDate(4, 13),
+	},
+	{
+		id: "1236",
+		content: "Okay that makes sense, I've just been using C++",
+		user: {
+			id: "666",
+			firstName: "Jasmine",
+			lastName: "Washington",
+		},
+		timeStamp: createDate(5, 31),
+	},
+	{
+		id: "1237",
+		content: "Has anyone been able to do a master theorem proof?",
+		user: {
+			id: "555",
+			firstName: "Jason",
+			lastName: "Bourne",
+		},
+		timeStamp: createDate(5, 35),
+	},
+	{
+		id: "1238",
+		content: "It's impossible.",
+		user: {
+			id: "444",
+			firstName: "John",
+			lastName: "Lee",
+		},
+		timeStamp: createDate(5, 32),
+	},
+];

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { StatusBar } from "expo-status-bar";
 import { StyleSheet, Text, View, Button } from "react-native";
 import Ionicons from "@expo/vector-icons/Ionicons";
@@ -36,10 +36,11 @@ export default function MainApp() {
 			<Tab.Screen
 				name="GroupsChatNavigator"
 				component={GroupsChatNavigator}
-				options={(navigation) => ({
+				options={({ route }) => ({
 					...globalOptions,
 					tabBarLabel: "Groups",
 					title: "Groups",
+					tabBarHideOnKeyboard: true,
 				})}
 			/>
 			<Tab.Screen name="Search" component={Search} options={globalOptions} />
