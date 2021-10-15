@@ -139,8 +139,7 @@ export default function PrivacyPolicy({ navigation }) {
 					new Privacy Policy to https://www.cs.virginia.edu/~jag8thv. You are
 					advised to consult this Privacy Policy regularly for any changes, as
 					continued use is deemed approval of all changes. You can check the
-					history of this policy by
-					https://www.docracy.com/doc/versions?docId=6016.
+					history of this policy by https://www.cs.virginia.edu/~jag8thv.
 				</Text>
 
 				<Text style={styles.boldtext}>Your Consent</Text>
