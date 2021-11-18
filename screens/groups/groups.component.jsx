@@ -9,6 +9,10 @@ import { headerTopPadding, pressedColor } from "../../misc/styleConstants";
 
 import { SearchBar } from "react-native-elements";
 
+import { getFirestore, collection } from "firebase/firestore";
+import firebaseApp from "../../firebase/config.js";
+import { useCollection } from "react-firebase-hooks/firestore";
+
 const groups = Array(10)
 	.fill()
 	.map((_, idx) => ({
@@ -31,6 +35,10 @@ export default function Groups({ navigation }) {
 	const updateSearching = () => {
 		setSearching(!searching);
 	};
+
+	const [snapshot, loading, error] = useCollection(
+		collection(getFirestore(firebaseApp), "groups")
+	);
 
 	return (
 		<View style={styles.container}>
@@ -71,6 +79,10 @@ export default function Groups({ navigation }) {
 				) : null}
 			</View>
 			<ScrollView style={{ width: "100%" }}>
+				{snapshot &&
+					snapshot.docs.map((doc) => (
+						<Text key={doc.id}>{JSON.stringify(doc.data())}</Text>
+					))}
 				{groups
 					.filter((group) => {
 						return group.name.includes(searchValue.toLowerCase());
