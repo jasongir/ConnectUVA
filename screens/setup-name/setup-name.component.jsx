@@ -1,5 +1,5 @@
 import { StatusBar } from "expo-status-bar";
-import React from "react";
+import React, { useState, useEffect } from "react";
 import {
 	StyleSheet,
 	Text,
@@ -9,14 +9,54 @@ import {
 	Pressable,
 } from "react-native";
 
+import firebaseApp from "../../firebase/config";
+import { getAuth } from "@firebase/auth";
+import { getFirestore, doc, setDoc } from "@firebase/firestore";
+
 export default function SetupName({ navigation }) {
-	const nextPress = () => {
-		navigation.push("SetupUVAID");
-	};
+	const [user, setUser] = useState(null);
+	const [errorMessage, setErrorMessage] = useState("");
+	useEffect(() => {
+		(async () => {
+			const user = getAuth(firebaseApp).currentUser;
+			setUser(user);
+
+			if (!user) navigation.navigate("Onboarding");
+		})();
+	}, []);
+
 	const prevPress = () => {
 		navigation.goBack();
 	};
-	const [textInputValue, setTextInputValue] = React.useState("");
+	const [firstName, setFirstName] = useState("");
+	const [lastName, setLastName] = useState("");
+
+	const onSubmit = async () => {
+		if (!firstName || !lastName) {
+			setErrorMessage("must include first and last name.");
+			return;
+		}
+		try {
+			const firestore = getFirestore(firebaseApp);
+			const newUserRef = await setDoc(doc(firestore, "users", user.uid), {
+				id: user.uid,
+				firstName,
+				lastName,
+				email: user.email,
+				groups: [],
+			});
+
+			navigation.push("InformationForm");
+		} catch (err) {
+			setErrorMessage(String(err));
+			console.log(err);
+		}
+	};
+	// useEffect(() => {
+	//    (async () => {
+
+	// 	})();
+	// }, [])
 	return (
 		<View style={styles.container}>
 			<Text style={styles.title}>What's your name?</Text>
@@ -24,12 +64,22 @@ export default function SetupName({ navigation }) {
 
 			<TextInput
 				style={styles.nameInput}
-				onChangeText={(text) => setTextInputValue(text)}
-				value={textInputValue}
-				placeholder="i.e. John Doe"
+				onChangeText={setFirstName}
+				value={firstName}
+				placeholder="first name"
+				keyboardType="default"
+			/>
+			<TextInput
+				style={styles.nameInput}
+				onChangeText={setLastName}
+				value={lastName}
+				placeholder="last name"
+				keyboardType="default"
 			/>
 
-			<Pressable style={styles.roundButton1} onPress={nextPress}>
+			{!!errorMessage && <Text>Error: {String(errorMessage)}</Text>}
+
+			<Pressable style={styles.roundButton1} onPress={onSubmit}>
 				<Text style={styles.buttonText}>Submit</Text>
 			</Pressable>
 

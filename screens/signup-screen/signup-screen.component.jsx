@@ -10,31 +10,40 @@ import {
 
 import firebaseApp from "../../firebase/config";
 import { getAuth } from "firebase/auth";
+import { collection, doc, setDoc, getFirestore } from "firebase/firestore";
 import { useCreateUserWithEmailAndPassword } from "react-firebase-hooks/auth";
 
 const SignupScreen = ({ navigation }) => {
+	// all the controlled information user provides
+
 	const [email, setEmail] = useState("");
 	const [password1, setPassword1] = useState("");
 	const [password2, setPassword2] = useState("");
+
 	const [errorMessage, setErrorMessage] = useState("");
 
 	const [createUserWithEmailAndPassword, user, loading, error] =
 		useCreateUserWithEmailAndPassword(getAuth(firebaseApp));
 
-	const onSubmitHandler = () => {
-		if (password1 !== password2) {
-			setErrorMessage("Your passwords did not match.");
-			return;
+	const onSubmitHandler = async () => {
+		try {
+			if (password1 !== password2) {
+				setErrorMessage("Your passwords did not match.");
+				return;
+			}
+			await createUserWithEmailAndPassword(email, password1);
+		} catch (error) {
+			setErrorMessage(error);
 		}
-		setErrorMessage("");
-		createUserWithEmailAndPassword(email, password1);
 	};
-	const loginPress = () => navigation.push("LoginScreen");
 
 	useEffect(() => {
-		if (user) navigation.push("InformationForm");
+		if (user) {
+			navigation.push("SetupName");
+		}
 	}, [user]);
 
+	const loginPress = () => navigation.push("LoginScreen");
 	return (
 		<SafeAreaView style={styles.container}>
 			<View>

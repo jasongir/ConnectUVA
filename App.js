@@ -81,6 +81,11 @@ export default function App() {
 						options={globalOptions}
 					/>
 					<Stack.Screen
+						name="SetupName"
+						component={SetupName}
+						options={globalOptions}
+					/>
+					<Stack.Screen
 						name="InformationForm"
 						component={InformationForm}
 						options={globalOptions}
