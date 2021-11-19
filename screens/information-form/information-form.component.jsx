@@ -62,7 +62,6 @@ export default function InformationForm({ navigation }) {
 	const [collectionValues, collectionLoading, collectionError] = useCollection(
 		collection(getFirestore(firebaseApp), "groups")
 	);
-	// useEffect(() => {}, [collectionValues])
 	const nextPress = () => {
 		navigation.push("MainApp");
 	};
