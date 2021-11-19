@@ -1,5 +1,5 @@
 import { StatusBar } from "expo-status-bar";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
 	StyleSheet,
 	Text,
@@ -17,6 +17,9 @@ import Avatar from "../../components/avatar/avatar.component";
 import { ListItem, Icon, Input } from "react-native-elements";
 
 import Ionicons from "@expo/vector-icons/Ionicons";
+import { signOut, getAuth } from "@firebase/auth";
+import firebaseApp from "../../firebase/config";
+import { useAuthState } from "react-firebase-hooks/auth";
 
 export default function myProfile({ navigation }) {
 	const savePress = () => {
@@ -27,6 +30,14 @@ export default function myProfile({ navigation }) {
 	const showDatePicker = () => {
 		return <DatePickerIOS value={date} mode="date" onChange={onChange} />;
 	};
+
+	const auth = getAuth(firebaseApp);
+	const logout = () => signOut(auth);
+
+	const [user, loading, error] = useAuthState(auth);
+	useEffect(() => {
+		if (!user) navigation.navigate("Onboarding");
+	}, [user]);
 
 	account = {
 		name: "Sam Galletta",
@@ -43,11 +54,7 @@ export default function myProfile({ navigation }) {
 			<KeyboardAvoidingView behavior={"padding"} style={{ flex: 1 }}>
 				<ScrollView>
 					<View style={styles.avatar}>
-
-					<Avatar style={styles.avatar} name="Sam Galletta" size={size} />
-
-
-
+						<Avatar style={styles.avatar} name="Sam Galletta" size={size} />
 					</View>
 
 					<Input
@@ -70,6 +77,7 @@ export default function myProfile({ navigation }) {
 					/>
 
 					<Button title="Apply Changes" onPress={savePress} />
+					<Button title="Log out" onPress={logout} />
 				</ScrollView>
 			</KeyboardAvoidingView>
 		</View>

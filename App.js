@@ -14,12 +14,16 @@ import VerificationCode from "./screens/verification-code/verification-code.comp
 import SetupName from "./screens/setup-name/setup-name.component";
 import SetupUVAID from "./screens/setup-uvaid/setup-uvaid.component";
 import SetupPhoto from "./screens/setup-photo/setup-photo.component";
-import InfoForm from "./screens/information-form/information-form.component";
+
 import myProfile from "./screens/my-profile/my-profile.component";
 import GroupManagement from "./screens/group-management/group-management.component";
 import MainApp from "./screens/main-app/main-app.component";
 import PrivacyPolicy from "./screens/privacy-policy/privacy-policy.component";
 import GroupSearch from "./screens/group-search/group-search.component";
+
+import LoginScreen from "./screens/login-screen/login-screen.component";
+import InformationForm from "./screens/information-form/information-form.component";
+import SignupScreen from "./screens/signup-screen/signup-screen.component";
 
 const Stack = createNativeStackNavigator();
 
@@ -44,37 +48,48 @@ export default function App() {
 						component={Onboarding}
 						options={globalOptions}
 					/>
-					<Stack.Screen
-						name="PhoneVerification"
-						component={PhoneVerification}
-						options={globalOptions}
-					/>
-					<Stack.Screen
-						name="VerificationCode"
-						component={VerificationCode}
-						options={globalOptions}
-					/>
-					<Stack.Screen
-						name="SetupName"
-						component={SetupName}
-						options={globalOptions}
-					/>
-					<Stack.Screen
-						name="SetupUVAID"
-						component={SetupUVAID}
-						options={globalOptions}
-					/>
-					<Stack.Screen
-						name="SetupPhoto"
-						component={SetupPhoto}
-						options={globalOptions}
-					/>
 					{/*
+                  <Stack.Screen
+                     name="PhoneVerification"
+                     component={PhoneVerification}
+                     options={globalOptions}
+                  />
+                  <Stack.Screen
+                     name="VerificationCode"
+                     component={VerificationCode}
+                     options={globalOptions}
+                  />
+                  <Stack.Screen
+                     name="SetupName"
+                     component={SetupName}
+                     options={globalOptions}
+                  />
+                  <Stack.Screen
+                     name="SetupUVAID"
+                     component={SetupUVAID}
+                     options={globalOptions}
+                  />
+                  <Stack.Screen
+                     name="SetupPhoto"
+                     component={SetupPhoto}
+                     options={globalOptions}
+				   	/> 
+               */}
 					<Stack.Screen
-						name="InfoForm"
-						component={InfoForm}
+						name="SignupScreen"
+						component={SignupScreen}
 						options={globalOptions}
-					/> */}
+					/>
+					<Stack.Screen
+						name="InformationForm"
+						component={InformationForm}
+						options={globalOptions}
+					/>
+					<Stack.Screen
+						name="LoginScreen"
+						component={LoginScreen}
+						options={globalOptions}
+					/>
 					<Stack.Screen
 						name="MainApp"
 						component={MainApp}

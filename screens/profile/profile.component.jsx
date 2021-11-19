@@ -1,13 +1,22 @@
 import { StatusBar } from "expo-status-bar";
-import React from "react";
-import { StyleSheet, Text, View, Button, ScrollView, Linking } from "react-native";
+import React, { useEffect } from "react";
+import {
+	StyleSheet,
+	Text,
+	View,
+	Button,
+	ScrollView,
+	Linking,
+} from "react-native";
 //import { Avatar } from "react-native-elements";
 import Avatar from "../../components/avatar/avatar.component";
 
+import { ListItem, Icon, Input } from "react-native-elements";
+// import Ionicons from "@expo/vector-icons/Ionicons";
 
-import { ListItem, Icon, Input } from 'react-native-elements'
-
-import Ionicons from "@expo/vector-icons/Ionicons";
+import { signOut, getAuth } from "@firebase/auth";
+import firebaseApp from "../../firebase/config";
+import { useAuthState } from "react-firebase-hooks/auth";
 
 export default function Profile({ navigation }) {
 	const groupPress = () => {
@@ -21,32 +30,35 @@ export default function Profile({ navigation }) {
 		navigation.push("PrivacyPolicy");
 	};
 	const notificationsPress = () => {
-		Linking.openURL('app-settings://');
+		Linking.openURL("app-settings://");
 	};
+	const auth = getAuth(firebaseApp);
+	const logoutPress = () => signOut(auth);
+
+	const [user, loading, error] = useAuthState(auth);
+	useEffect(() => {
+		if (!user) navigation.navigate("Onboarding");
+	}, [user]);
 	const size = 150;
 
 	return (
 		<View style={styles.container}>
-
 			<View style={styles.header}>
 				<Text style={styles.title}>Profile</Text>
 			</View>
 
 			<ScrollView>
-
-
 				{/* <View style={styles.avatar}>
 				<Avatar size="xlarge" rounded source={{ uri: 'https://s3.amazonaws.com/uifaces/faces/twitter/adhamdannaway/128.jpgs' }} title="SG" />
 			</View> */}
 
 				<View style={styles.avatar}>
-					<Avatar style={styles.avatar}  name="Sam Galletta" size={size}/>
+					<Avatar style={styles.avatar} name="Sam Galletta" size={size} />
 				</View>
 
 				<View style={styles.text}>
 					<Text style={styles.textStyle}>Sam Galletta</Text>
 				</View>
-
 
 				<View style={styles.list}>
 					<ListItem key="account" bottomDivider onPress={accountPress}>
@@ -65,7 +77,11 @@ export default function Profile({ navigation }) {
 						<ListItem.Chevron />
 					</ListItem>
 
-					<ListItem key="notifications" bottomDivider onPress={notificationsPress}>
+					<ListItem
+						key="notifications"
+						bottomDivider
+						onPress={notificationsPress}
+					>
 						<Icon name="notifications-outline" type="ionicon" />
 						<ListItem.Content>
 							<ListItem.Title>Notifications</ListItem.Title>
@@ -81,19 +97,21 @@ export default function Profile({ navigation }) {
 						<ListItem.Chevron />
 					</ListItem>
 
-
-
+					<ListItem key="logout" bottomDivider onPress={logoutPress}>
+						<Icon name="log-out-outline" type="ionicon" />
+						<ListItem.Content>
+							<ListItem.Title>Log out</ListItem.Title>
+						</ListItem.Content>
+						<ListItem.Chevron />
+					</ListItem>
 				</View>
-
 			</ScrollView>
 		</View>
-
 	);
 }
 
 const styles = StyleSheet.create({
 	container: {
-
 		flex: 1,
 		backgroundColor: "#fff",
 	},
@@ -132,4 +150,3 @@ const styles = StyleSheet.create({
 		paddingHorizontal: 30,
 	},
 });
-
