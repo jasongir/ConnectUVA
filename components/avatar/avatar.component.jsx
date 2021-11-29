@@ -10,18 +10,27 @@ const Avatar = ({ avatar, name, size, textColor }) => {
 		.toUpperCase();
 
 	return avatar ? ( // if we get info passed about an actual picture:
-		<View style={[styles.avatar, size ? { width: size, height: size, borderRadius: size/2 } : {}]}>
+		<View
+			style={[
+				styles.avatar,
+				size ? { width: size, height: size, borderRadius: size / 2 } : {},
+			]}
+		>
 			{avatar}
 		</View>
 	) : (
 		<View
-			style={[styles.placeholder, size ? { width: size, height: size, borderRadius: size/2} : {}]}
+			style={[
+				styles.placeholder,
+				size ? { width: size, height: size, borderRadius: size / 2 } : {},
+			]}
 		>
 			<Text
 				style={[
 					styles.text,
 					size ? { fontSize: Math.floor((size * 16) / 50) } : null,
 					textColor ? { color: textColor } : null,
+					initials.length > 3 ? { fontSize: 12 } : null,
 				]}
 			>
 				{initials}
@@ -30,7 +39,7 @@ const Avatar = ({ avatar, name, size, textColor }) => {
 	);
 };
 
-export default Avatar; 
+export default Avatar;
 
 const styles = StyleSheet.create({
 	avatar: {

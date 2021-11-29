@@ -1,4 +1,10 @@
-import { StyleSheet, Text, View, Pressable } from "react-native";
+import {
+	StyleSheet,
+	Text,
+	View,
+	Pressable,
+	useWindowDimensions,
+} from "react-native";
 import React from "react";
 
 import Avatar from "../avatar/avatar.component";
@@ -16,6 +22,8 @@ const GroupListItem = ({
 }) => {
 	const { text, timeStamp } = lastText;
 
+	const window = useWindowDimensions();
+
 	const onPress = () =>
 		navigation.push("MessagingScreen", {
 			groupName: name,
@@ -24,9 +32,13 @@ const GroupListItem = ({
 	return (
 		<Pressable
 			onPress={onPress}
-			style={({ pressed }) => ({
-				backgroundColor: pressed ? pressedColor : "white",
-			})}
+			style={({ pressed }) => [
+				{
+					backgroundColor: pressed ? pressedColor : "white",
+					width: window.width,
+				},
+				// { borderStyle: "solid", borderColor: "black", borderWidth: 1 },
+			]}
 		>
 			<View style={styles.item}>
 				<Avatar style={styles.avatar} avatar={avatar} name={name} />
@@ -34,9 +46,14 @@ const GroupListItem = ({
 					<Text style={styles.itemTitle}>{name}</Text>
 					<Text style={styles.itemSubtitle}>{text}</Text>
 				</View>
-				<View style={styles.groupEnd}>
+				<View
+					style={[
+						styles.groupEnd,
+						// { borderStyle: "solid", borderColor: "black", borderWidth: 1 },
+					]}
+				>
 					<View style={styles.paddingBottom10}>
-						<MessageTimeStamp timeStamp={timeStamp} />
+						<MessageTimeStamp timeStamp={timeStamp.toDate()} />
 					</View>
 					<UnreadMessageNumber number={unreadMessageNumber} />
 				</View>
@@ -50,7 +67,7 @@ export default GroupListItem;
 const styles = StyleSheet.create({
 	item: {
 		width: "100%",
-		padding: 15,
+		padding: 10,
 		display: "flex",
 		flexDirection: "row",
 		justifyContent: "space-between",
@@ -60,7 +77,8 @@ const styles = StyleSheet.create({
 		// borderWidth: 1,
 		// borderStyle: "solid",
 		// borderColor: "black",
-		paddingRight: "30%",
+		paddingHorizontal: 15,
+		flex: 6,
 	},
 	itemTitle: {
 		fontSize: 18,
@@ -71,17 +89,24 @@ const styles = StyleSheet.create({
 	},
 	avatar: {
 		alignSelf: "flex-start",
+		flex: 1,
 	},
 	groupEnd: {
 		alignSelf: "flex-end",
+		marginRight: 2,
 
 		display: "flex",
 		flexDirection: "column",
 		alignItems: "center",
 
 		height: "100%",
+		flex: 2,
 	},
 	paddingBottom10: {
 		paddingBottom: 10,
+
+		// borderStyle: "solid",
+		// borderColor: "black",
+		// borderWidth: 1,
 	},
 });

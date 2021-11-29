@@ -1,6 +1,13 @@
 import { StatusBar } from "expo-status-bar";
 import React, { useContext, useEffect, useState } from "react";
-import { StyleSheet, Text, View, ScrollView, Pressable } from "react-native";
+import {
+	StyleSheet,
+	Text,
+	View,
+	ScrollView,
+	Pressable,
+	SafeAreaView,
+} from "react-native";
 import Ionicons from "@expo/vector-icons/Ionicons";
 
 import GroupListItem from "../../components/group-list-item/group-list-item.component";
@@ -68,41 +75,33 @@ export default function Groups({ navigation }) {
 		setUserInfo(userInfoValue);
 	}, [userInfoValue, userInfoLoading]);
 
-	const [groupsQuery, setGroupsQuery] = useState(null);
+	const [userGroupsSnap, userGroupsLoading, userGroupsError] = useCollection(
+		collection(getFirestore(firebaseApp), "groups")
+	);
+	const [allGroups, setAllGroups] = useState([]);
 	useEffect(() => {
 		(async () => {
 			if (!userInfo) return;
 			else {
-				const groupsRef = collection(getFirestore(firebaseApp), "groups");
-				// const allGroups = await getDocs(
-				// 	collection(getFirestore(firebaseApp), "groups")
-				// );
-				// allGroups.forEach((doc) => console.log(doc.id));
-				// console.log(userInfo.groups);
-				const newGroupsQuery = query(groupsRef, where("type", "==", "course"));
-				const theGroups = await getDocs(newGroupsQuery);
-				theGroups.docs.forEach((group) => console.log(group.data()));
-				// console.log(theGroups.docs);
-				setGroupsQuery(newGroupsQuery);
+				if (userGroupsSnap?.docs?.length > 0) {
+					const allGroups = [];
+					userGroupsSnap.forEach((group) => {
+						if (userInfo.groups.includes(group.id))
+							allGroups.push({ ...group.data(), id: group.id });
+					});
+					setAllGroups(allGroups);
+				}
 			}
 		})();
-	}, [userInfo]);
-	const [userGroupsSnap, userGroupsLoading, userGroupsError] =
-		useCollection(groupsQuery);
-
-	// useEffect(() => {
-	// 	console.log("usergroupsnap: " + userGroupsSnap?.docs);
-	// 	// console.log("groupsQuery: " + groupsQuery);
-	// 	// console.log("userInfo: " + userInfo);
-	// });
+	}, [userInfo, userGroupsSnap]);
 
 	return (
-		<View style={styles.container}>
+		<SafeAreaView style={styles.container}>
 			<View style={styles.headerContainer}>
 				<View style={styles.header}>
 					<Text style={styles.title}>Groups</Text>
 					<Pressable
-						onPress={setSearchValue}
+						onPress={updateSearching}
 						style={({ pressed }) => [
 							{
 								backgroundColor: pressed ? pressedColor : "white",
@@ -129,42 +128,35 @@ export default function Groups({ navigation }) {
 					<SearchBar
 						lightTheme
 						placeholder="search for a group..."
-						onChangeText={updateSearchValue}
+						onChangeText={setSearchValue}
 						value={searchValue}
 					/>
 				) : null}
 			</View>
 			<ScrollView style={{ width: "100%" }}>
-				{/* snapshot &&
-					snapshot.docs.map((doc) => (
-						<Text key={doc.id}>{JSON.stringify(doc.data())}</Text>
-               )) */}
 				{userGroupsError && <Text>Error: {userGroupsError.message}</Text>}
 				{userGroupsLoading && <Text>Loading your groups...</Text>}
-				{userGroupsSnap && userGroupsSnap.length > 0 ? (
-					userGroupsSnap.docs.map((group) => (
-						<Text key={group.id}>{JSON.stringify(group.data())}</Text>
-					))
+				{allGroups && allGroups.length > 0 ? (
+					allGroups
+						.filter((group) =>
+							group.name.toLowerCase().includes(searchValue.toLowerCase())
+						)
+						.map(({ id, name, lastMessage, timestamp }) => (
+							<GroupListItem
+								key={id}
+								name={name}
+								lastText={{ text: lastMessage, timeStamp: timestamp }}
+								avatar={null}
+								unreadMessageNumber={0}
+								navigation={navigation}
+							/>
+						))
 				) : (
-					<Text>there are no groups to display >:(</Text>
+					<Text>there are no groups to display :(</Text>
 				)}
-				{groups
-					.filter((group) => {
-						return group.name.includes(searchValue.toLowerCase());
-					})
-					.map(({ name, lastText, avatar, unreadMessageNumber }) => (
-						<GroupListItem
-							key={name}
-							name={name}
-							lastText={lastText}
-							avatar={avatar}
-							unreadMessageNumber={unreadMessageNumber}
-							navigation={navigation}
-						/>
-					))}
 			</ScrollView>
 			<StatusBar style="auto" />
-		</View>
+		</SafeAreaView>
 	);
 }
 

@@ -33,7 +33,10 @@ export default function Profile({ navigation }) {
 		Linking.openURL("app-settings://");
 	};
 	const auth = getAuth(firebaseApp);
-	const logoutPress = () => signOut(auth);
+	const logoutPress = () => {
+		signOut(auth);
+		navigation.navigate("Onboarding");
+	};
 
 	const [user, loading, error] = useAuthState(auth);
 	useEffect(() => {
