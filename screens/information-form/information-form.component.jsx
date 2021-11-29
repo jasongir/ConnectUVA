@@ -1,5 +1,5 @@
 import { StatusBar } from "expo-status-bar";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import {
 	StyleSheet,
 	Text,
@@ -16,6 +16,7 @@ import { getAuth } from "firebase/auth";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { useCollection } from "react-firebase-hooks/firestore";
 import GroupChoiceList from "../../components/group-choice-list/group-choice-list.component";
+import { UserContext } from "../../App";
 
 /* todo: when the user submits this information, we 
 a. store these selections in the user's information (firestore collection for each user)
@@ -66,6 +67,7 @@ export default function InformationForm({ navigation }) {
 	);
 
 	// save the user's data; add them to the selected groups
+	const [userInfo, setUserInfo] = useContext(UserContext);
 	const nextPress = async () => {
 		if (selectedGroups.length === 0) {
 			setErrorMessage("Must select at least one group to continue.");
@@ -89,6 +91,10 @@ export default function InformationForm({ navigation }) {
 					},
 					{ merge: true }
 				);
+			});
+			setUserInfo({
+				...userInfo,
+				groups: selectedGroups.map((group) => group.group.id),
 			});
 
 			navigation.push("MainApp");

@@ -1,5 +1,5 @@
 import { StatusBar } from "expo-status-bar";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import {
 	StyleSheet,
 	Text,
@@ -12,6 +12,7 @@ import {
 import firebaseApp from "../../firebase/config";
 import { getAuth } from "@firebase/auth";
 import { getFirestore, doc, setDoc } from "@firebase/firestore";
+import { UserContext } from "../../App";
 
 export default function SetupName({ navigation }) {
 	const [user, setUser] = useState(null);
@@ -31,6 +32,7 @@ export default function SetupName({ navigation }) {
 	const [firstName, setFirstName] = useState("");
 	const [lastName, setLastName] = useState("");
 
+	const [userInfo, setUserInfo] = useContext(UserContext);
 	const onSubmit = async () => {
 		if (!firstName || !lastName) {
 			setErrorMessage("must include first and last name.");
@@ -38,13 +40,18 @@ export default function SetupName({ navigation }) {
 		}
 		try {
 			const firestore = getFirestore(firebaseApp);
-			const newUserRef = await setDoc(doc(firestore, "users", user.uid), {
+			const userObj = {
 				id: user.uid,
 				firstName,
 				lastName,
 				email: user.email,
 				groups: [],
-			});
+			};
+			const newUserRef = await setDoc(
+				doc(firestore, "users", user.uid),
+				userObj
+			);
+			setUserInfo(userObj);
 
 			navigation.push("InformationForm");
 		} catch (err) {

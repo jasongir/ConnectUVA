@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { StatusBar } from "expo-status-bar";
 import { StyleSheet, Text, View, Button } from "react-native";
 
@@ -28,6 +28,7 @@ import SignupScreen from "./screens/signup-screen/signup-screen.component";
 const Stack = createNativeStackNavigator();
 
 export const mainFont = "Montserrat-Black";
+export const UserContext = React.createContext();
 
 export default function App() {
 	let [fontsLoaded] = useFonts({
@@ -38,17 +39,20 @@ export default function App() {
 		headerShown: false,
 	};
 
+	const [userInfo, setUserInfo] = useState(null);
+
 	if (!fontsLoaded) return <AppLoading />;
 	else
 		return (
-			<NavigationContainer>
-				<Stack.Navigator initialRouteName="InformationForm">
-					<Stack.Screen
-						name="Onboarding"
-						component={Onboarding}
-						options={globalOptions}
-					/>
-					{/*
+			<UserContext.Provider value={[userInfo, setUserInfo]}>
+				<NavigationContainer>
+					<Stack.Navigator initialRouteName="Onboarding">
+						<Stack.Screen
+							name="Onboarding"
+							component={Onboarding}
+							options={globalOptions}
+						/>
+						{/*
                   <Stack.Screen
                      name="PhoneVerification"
                      component={PhoneVerification}
@@ -75,53 +79,54 @@ export default function App() {
                      options={globalOptions}
 				   	/> 
                */}
-					<Stack.Screen
-						name="SignupScreen"
-						component={SignupScreen}
-						options={globalOptions}
-					/>
-					<Stack.Screen
-						name="SetupName"
-						component={SetupName}
-						options={globalOptions}
-					/>
-					<Stack.Screen
-						name="InformationForm"
-						component={InformationForm}
-						options={globalOptions}
-					/>
-					<Stack.Screen
-						name="LoginScreen"
-						component={LoginScreen}
-						options={globalOptions}
-					/>
-					<Stack.Screen
-						name="MainApp"
-						component={MainApp}
-						options={globalOptions}
-					/>
-					<Stack.Screen
-						name="MyProfile"
-						component={myProfile}
-						options={globalOptions}
-					/>
-					<Stack.Screen
-						name="GroupManagement"
-						component={GroupManagement}
-						options={globalOptions}
-					/>
-					<Stack.Screen
-						name="PrivacyPolicy"
-						component={PrivacyPolicy}
-						options={globalOptions}
-					/>
-					<Stack.Screen
-						name="GroupSearch"
-						component={GroupSearch}
-						options={globalOptions}
-					/>
-				</Stack.Navigator>
-			</NavigationContainer>
+						<Stack.Screen
+							name="SignupScreen"
+							component={SignupScreen}
+							options={globalOptions}
+						/>
+						<Stack.Screen
+							name="SetupName"
+							component={SetupName}
+							options={globalOptions}
+						/>
+						<Stack.Screen
+							name="InformationForm"
+							component={InformationForm}
+							options={globalOptions}
+						/>
+						<Stack.Screen
+							name="LoginScreen"
+							component={LoginScreen}
+							options={globalOptions}
+						/>
+						<Stack.Screen
+							name="MainApp"
+							component={MainApp}
+							options={globalOptions}
+						/>
+						<Stack.Screen
+							name="MyProfile"
+							component={myProfile}
+							options={globalOptions}
+						/>
+						<Stack.Screen
+							name="GroupManagement"
+							component={GroupManagement}
+							options={globalOptions}
+						/>
+						<Stack.Screen
+							name="PrivacyPolicy"
+							component={PrivacyPolicy}
+							options={globalOptions}
+						/>
+						<Stack.Screen
+							name="GroupSearch"
+							component={GroupSearch}
+							options={globalOptions}
+						/>
+					</Stack.Navigator>
+				</NavigationContainer>
+			</UserContext.Provider>
 		);
 }
 
