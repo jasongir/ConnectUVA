@@ -47,15 +47,17 @@ const SignupScreen = ({ navigation }) => {
 	return (
 		<SafeAreaView style={styles.container}>
 			<View>
-				<Text>Sign up Screen</Text>
+				<Text style={styles.title}>Sign up Screen</Text>
 				<Text>Enter your email:</Text>
 				<TextInput
+					style={styles.nameInput}
 					onChangeText={setEmail}
 					value={email}
 					placeholder="computingid@virginia.edu"
 					keyboardType="email-address"
 				/>
 				<TextInput
+					style={styles.nameInput}
 					onChangeText={setPassword1}
 					value={password1}
 					placeholder="password"
@@ -63,6 +65,7 @@ const SignupScreen = ({ navigation }) => {
 					secureTextEntry
 				/>
 				<TextInput
+					style={styles.nameInput}
 					onChangeText={setPassword2}
 					value={password2}
 					placeholder="confirm password"
@@ -71,14 +74,14 @@ const SignupScreen = ({ navigation }) => {
 				/>
 				{!!errorMessage && <Text>Error: {errorMessage}</Text>}
 				{error && <Text>Error: {error.message}</Text>}
-				<Pressable onPress={onSubmitHandler}>
-					<Text>Sign up</Text>
+				<Pressable onPress={onSubmitHandler} style={styles.roundButton1}>
+					<Text style={styles.buttonText}>Sign up</Text>
 				</Pressable>
 				{loading && <Text>Loading new user...</Text>}
 
 				<Text>For returning users:</Text>
-				<Pressable onPress={loginPress}>
-					<Text>Login up</Text>
+				<Pressable style={styles.roundButton1} onPress={loginPress}>
+					<Text style={styles.buttonText}>Login</Text>
 				</Pressable>
 			</View>
 		</SafeAreaView>
@@ -89,9 +92,61 @@ export default SignupScreen;
 
 const styles = StyleSheet.create({
 	container: {
+		width: "100%",
 		flex: 1,
 		backgroundColor: "#fff",
 		alignItems: "center",
 		justifyContent: "center",
+	},
+	title: {
+		fontSize: 30,
+		fontWeight: "800",
+		top: "-21%",
+	},
+	subtitle: {
+		fontSize: 18,
+		fontWeight: "800",
+		top: "-17%",
+		opacity: 0.4,
+		paddingHorizontal: 50,
+		textAlign: "center",
+	},
+	phoneInput: {
+		height: 50,
+		width: "55%",
+		top: "-10%",
+		borderColor: "gray",
+		borderWidth: 1,
+		textAlign: "center",
+		borderRadius: 30,
+		fontSize: 18,
+	},
+	buttonText: {
+		color: "white",
+		textAlign: "center",
+		fontSize: 18,
+	},
+	roundButton1: {
+		backgroundColor: "black",
+		padding: 18,
+		borderRadius: 30,
+		elevation: 5,
+		width: "80%",
+		height: 60,
+		top: "0%",
+	},
+	goBack: {
+		top: "35%",
+		left: "-35%",
+	},
+	nameInput: {
+		height: 50,
+		width: "70%",
+		// top: "-10%",
+		borderColor: "gray",
+		borderWidth: 1,
+		textAlign: "center",
+		borderRadius: 30,
+		fontSize: 18,
 	},
 });
