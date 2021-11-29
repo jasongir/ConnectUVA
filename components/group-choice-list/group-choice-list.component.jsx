@@ -3,6 +3,8 @@ import { StyleSheet, Text, View, Pressable } from "react-native";
 
 import { pressedColor } from "../../misc/styleConstants";
 
+import { ListItem } from "react-native-elements";
+
 const GroupChoiceList = ({
 	type,
 	collectionValues,
@@ -11,7 +13,7 @@ const GroupChoiceList = ({
 	selectedGroups,
 }) => {
 	return (
-		<View>
+		<View style={styles.container}>
 			{collectionValues ? (
 				collectionValues.docs
 					.filter((group) => group.data().type === type)
@@ -27,9 +29,23 @@ const GroupChoiceList = ({
 										? pressedColor
 										: "white",
 								},
+								styles.groupItem,
 							]}
 						>
-							<Text>{group.data().name}</Text>
+							<ListItem
+								bottomDivider
+								containerStyle={{
+									backgroundColor: selectedGroups.some(
+										(selectedGroup) => group.id === selectedGroup.id
+									)
+										? pressedColor
+										: "white",
+								}}
+							>
+								<ListItem.Content>
+									<ListItem.Title>{group.data().name}</ListItem.Title>
+								</ListItem.Content>
+							</ListItem>
 						</Pressable>
 					))
 			) : (
@@ -41,4 +57,15 @@ const GroupChoiceList = ({
 
 export default GroupChoiceList;
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+	container: {
+		width: "100%",
+		flexDirection: "column",
+		// borderColor: "blue",
+		// borderWidth: 2,
+		// borderStyle: "solid",
+	},
+	groupItem: {
+		width: "100%",
+	},
+});

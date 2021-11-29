@@ -109,8 +109,10 @@ export default function InformationForm({ navigation }) {
 
 	return (
 		<SafeAreaView style={styles.container}>
-			<Text>Select up to 10 groups that interest you.</Text>
-			<ScrollView>
+			<Text style={styles.title}>
+				Select up to 10 groups that interest you.
+			</Text>
+			<ScrollView style={styles.scrollStyle}>
 				{loading && <Text>Loading user information...</Text>}
 				{error && <Text>Error: {error.message}</Text>}
 
@@ -119,7 +121,7 @@ export default function InformationForm({ navigation }) {
 
 				{!!errorMessage && <Text>{errorMessage}</Text>}
 
-				<Text>Courses:</Text>
+				<Text style={styles.subtitle}>Courses:</Text>
 				<GroupChoiceList
 					type="course"
 					collectionValues={collectionValues}
@@ -127,7 +129,7 @@ export default function InformationForm({ navigation }) {
 					selectGroup={selectGroup}
 					selectedGroups={selectedGroups}
 				/>
-				<Text>Interests:</Text>
+				<Text style={styles.subtitle}>Interests:</Text>
 				<GroupChoiceList
 					type="interest"
 					collectionValues={collectionValues}
@@ -135,7 +137,7 @@ export default function InformationForm({ navigation }) {
 					selectGroup={selectGroup}
 					selectedGroups={selectedGroups}
 				/>
-				<Text>Majors:</Text>
+				<Text style={styles.subtitle}>Majors:</Text>
 				<GroupChoiceList
 					type={"major"}
 					collectionValues={collectionValues}
@@ -143,7 +145,7 @@ export default function InformationForm({ navigation }) {
 					selectGroup={selectGroup}
 					selectedGroups={selectedGroups}
 				/>
-				<Text>Class Years:</Text>
+				<Text style={styles.subtitle}>Class Years:</Text>
 				<GroupChoiceList
 					type={"classYear"}
 					collectionValues={collectionValues}
@@ -154,17 +156,103 @@ export default function InformationForm({ navigation }) {
 				<StatusBar style="auto" />
 			</ScrollView>
 			<Text>{selectedGroups.length}/10 groups selected</Text>
-			<Button title="next" onPress={nextPress} />
-			<Button title="prev" onPress={prevPress} />
+			<View style={styles.buttonContainer}>
+				<Pressable onPress={prevPress} style={styles.bottomButton}>
+					<Text style={styles.bottomButtonText}>Previous</Text>
+				</Pressable>
+				<Pressable
+					onPress={nextPress}
+					style={[styles.bottomButton, styles.submitButton]}
+				>
+					<Text style={[styles.bottomButtonText, styles.submitButtonText]}>
+						Submit
+					</Text>
+				</Pressable>
+			</View>
 		</SafeAreaView>
 	);
 }
 
 const styles = StyleSheet.create({
 	container: {
+		width: "100%",
 		flex: 1,
 		backgroundColor: "#fff",
+		flexDirection: "column",
 		alignItems: "center",
+		justifyContent: "flex-start",
+	},
+	scrollStyle: {
+		width: "100%",
+	},
+	title: {
+		fontSize: 30,
+		fontWeight: "800",
+		paddingTop: "15%",
+		textAlign: "center",
+	},
+	subtitle: {
+		fontSize: 18,
+		fontWeight: "800",
+		opacity: 0.4,
+		paddingHorizontal: 50,
+		paddingTop: "10%",
+		textAlign: "center",
+	},
+	buttonText: {
+		color: "white",
+		textAlign: "center",
+		fontSize: 18,
+	},
+	roundButton1: {
+		alignSelf: "center",
+		backgroundColor: "black",
+		padding: 16,
+		borderRadius: 30,
+		elevation: 5,
+		width: "80%",
+		marginTop: 20,
+	},
+	roundButton2: {
+		alignSelf: "center",
+		backgroundColor: "white",
+		padding: 16,
+		borderColor: "black",
+		borderWidth: 3,
+		borderStyle: "solid",
+		borderRadius: 30,
+		elevation: 5,
+		width: "80%",
+		top: "0%",
+	},
+	buttonText2: {
+		color: "black",
+		textAlign: "center",
+		fontSize: 18,
+	},
+	buttonContainer: {
+		flexDirection: "row",
 		justifyContent: "center",
+	},
+	bottomButton: {
+		paddingVertical: 10,
+		width: "45%",
+		margin: 5,
+
+		borderRadius: 70,
+
+		borderColor: "black",
+		borderStyle: "solid",
+		borderWidth: 1,
+	},
+	bottomButtonText: {
+		fontSize: 20,
+		textAlign: "center",
+	},
+	submitButton: {
+		backgroundColor: "black",
+	},
+	submitButtonText: {
+		color: "white",
 	},
 });
