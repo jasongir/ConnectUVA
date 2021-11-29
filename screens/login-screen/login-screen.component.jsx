@@ -6,6 +6,7 @@ import {
 	View,
 	SafeAreaView,
 	TextInput,
+	useWindowDimensions,
 } from "react-native";
 
 import firebaseApp from "../../firebase/config";
@@ -31,20 +32,23 @@ const SignupScreen = ({ navigation }) => {
 		if (user) navigation.push("MainApp");
 	}, [user]);
 
+	const { width, height } = useWindowDimensions();
+
 	return (
 		<SafeAreaView style={styles.container}>
 			<View>
 				<Text style={styles.title}>Login Screen</Text>
-				<Text>Enter your email:</Text>
+				<Text style={styles.subtitle}>Enter your email:</Text>
 				<TextInput
 					onChangeText={setEmail}
 					value={email}
 					placeholder="computingid@virginia.edu"
 					keyboardType="email-address"
-					style={styles.nameInput}
+					style={[styles.nameInput, { width: width * 0.65 }]}
 				/>
+				<Text style={styles.subtitle}>And your password:</Text>
 				<TextInput
-					style={styles.nameInput}
+					style={[styles.nameInput, { width: width * 0.65 }]}
 					onChangeText={setPassword}
 					value={password}
 					placeholder="password"
@@ -52,13 +56,21 @@ const SignupScreen = ({ navigation }) => {
 					secureTextEntry
 				/>
 				{error && <Text>Error: {error.message}</Text>}
-				<Pressable onPress={onSubmitHandler} style={styles.roundButton1}>
-					<Text style={styles.buttonText}>Log into ConnectUVA</Text>
+				<Pressable
+					onPress={onSubmitHandler}
+					style={[styles.roundButton1, { width: width * 0.5 }]}
+				>
+					<Text style={styles.buttonText}>Login</Text>
 				</Pressable>
 				{loading && <Text>Logging into ConnectUVA...</Text>}
-				<Text>For first-time users:</Text>
-				<Pressable onPress={signupPress} style={[styles.roundButton1]}>
-					<Text style={styles.buttonText}>Sign up</Text>
+				<Pressable
+					onPress={signupPress}
+					style={[
+						styles.roundButton2,
+						{ width: width * 0.5, marginTop: "25%" },
+					]}
+				>
+					<Text style={styles.buttonText2}>Sign up</Text>
 				</Pressable>
 			</View>
 		</SafeAreaView>
@@ -72,31 +84,23 @@ const styles = StyleSheet.create({
 		width: "100%",
 		flex: 1,
 		backgroundColor: "#fff",
+		flexDirection: "column",
 		alignItems: "center",
-		justifyContent: "center",
+		justifyContent: "flex-start",
 	},
 	title: {
 		fontSize: 30,
 		fontWeight: "800",
-		top: "-21%",
+		paddingTop: "25%",
+		textAlign: "center",
 	},
 	subtitle: {
 		fontSize: 18,
 		fontWeight: "800",
-		top: "-17%",
 		opacity: 0.4,
 		paddingHorizontal: 50,
+		paddingTop: "10%",
 		textAlign: "center",
-	},
-	phoneInput: {
-		height: 50,
-		width: "55%",
-		top: "-10%",
-		borderColor: "gray",
-		borderWidth: 1,
-		textAlign: "center",
-		borderRadius: 30,
-		fontSize: 18,
 	},
 	buttonText: {
 		color: "white",
@@ -104,13 +108,30 @@ const styles = StyleSheet.create({
 		fontSize: 18,
 	},
 	roundButton1: {
+		alignSelf: "center",
 		backgroundColor: "black",
-		padding: 18,
+		padding: 16,
 		borderRadius: 30,
 		elevation: 5,
 		width: "80%",
-		height: 60,
+		marginTop: 20,
+	},
+	roundButton2: {
+		alignSelf: "center",
+		backgroundColor: "white",
+		padding: 16,
+		borderColor: "black",
+		borderWidth: 3,
+		borderStyle: "solid",
+		borderRadius: 30,
+		elevation: 5,
+		width: "80%",
 		top: "0%",
+	},
+	buttonText2: {
+		color: "black",
+		textAlign: "center",
+		fontSize: 18,
 	},
 	goBack: {
 		top: "35%",
@@ -119,7 +140,6 @@ const styles = StyleSheet.create({
 	nameInput: {
 		height: 50,
 		width: "70%",
-		// top: "-10%",
 		borderColor: "gray",
 		borderWidth: 1,
 		textAlign: "center",
