@@ -36,6 +36,7 @@ import {
 	collection,
 	doc,
 	addDoc,
+	getDoc,
 	updateDoc,
 	arrayUnion,
 	Timestamp,
@@ -136,6 +137,14 @@ export default function MessagingScreen({ navigation, route }) {
 						user: userInfo,
 					}
 				);
+
+				const groupChatRef = doc(getFirestore(firebaseApp), "groups", groupId);
+				await updateDoc(groupChatRef, {
+					lastMessage: `${userInfo.firstName}: ${inputVal}`,
+				});
+
+				// const document = await getDoc(groupChatRef);
+				// console.log(document.data());
 			}
 		} catch (err) {
 			console.log(err);
