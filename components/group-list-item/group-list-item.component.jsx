@@ -19,6 +19,7 @@ const GroupListItem = ({
 	lastText,
 	avatar,
 	unreadMessageNumber,
+	groupId,
 }) => {
 	const { text, timeStamp } = lastText;
 
@@ -27,6 +28,7 @@ const GroupListItem = ({
 	const onPress = () =>
 		navigation.push("MessagingScreen", {
 			groupName: name,
+			groupId,
 		});
 
 	return (

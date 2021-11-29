@@ -11,16 +11,12 @@ import {
 import Ionicons from "@expo/vector-icons/Ionicons";
 
 import GroupListItem from "../../components/group-list-item/group-list-item.component";
-
 import { headerTopPadding, pressedColor } from "../../misc/styleConstants";
-
 import { SearchBar } from "react-native-elements";
 
 import firebaseApp from "../../firebase/config.js";
-
 import { getAuth } from "firebase/auth";
 import { useAuthState } from "react-firebase-hooks/auth";
-
 import { UserContext } from "../../App";
 
 import {
@@ -37,18 +33,6 @@ import {
 	useCollectionData,
 	useDocumentData,
 } from "react-firebase-hooks/firestore";
-
-const groups = Array(10)
-	.fill()
-	.map((_, idx) => ({
-		name: `group ${idx}`,
-		lastText: {
-			text: `last message in ${idx}`,
-			timeStamp: new Date(),
-		},
-		avatar: null,
-		unreadMessageNumber: Math.floor(Math.random() * 7),
-	}));
 
 export default function Groups({ navigation }) {
 	const [searching, setSearching] = useState(false);
@@ -82,15 +66,13 @@ export default function Groups({ navigation }) {
 	useEffect(() => {
 		(async () => {
 			if (!userInfo) return;
-			else {
-				if (userGroupsSnap?.docs?.length > 0) {
-					const allGroups = [];
-					userGroupsSnap.forEach((group) => {
-						if (userInfo.groups.includes(group.id))
-							allGroups.push({ ...group.data(), id: group.id });
-					});
-					setAllGroups(allGroups);
-				}
+			else if (userGroupsSnap?.docs?.length > 0) {
+				const allGroups = [];
+				userGroupsSnap.forEach((group) => {
+					if (userInfo.groups.includes(group.id))
+						allGroups.push({ ...group.data(), id: group.id });
+				});
+				setAllGroups(allGroups);
 			}
 		})();
 	}, [userInfo, userGroupsSnap]);
@@ -149,6 +131,7 @@ export default function Groups({ navigation }) {
 								avatar={null}
 								unreadMessageNumber={0}
 								navigation={navigation}
+								groupId={id}
 							/>
 						))
 				) : (
@@ -188,3 +171,17 @@ const styles = StyleSheet.create({
 		borderRadius: 99,
 	},
 });
+
+/*
+const groups = Array(10)
+	.fill()
+	.map((_, idx) => ({
+		name: `group ${idx}`,
+		lastText: {
+			text: `last message in ${idx}`,
+			timeStamp: new Date(),
+		},
+		avatar: null,
+		unreadMessageNumber: Math.floor(Math.random() * 7),
+	}));
+*/

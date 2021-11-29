@@ -94,7 +94,7 @@ export default function InformationForm({ navigation }) {
 			});
 			setUserInfo({
 				...userInfo,
-				groups: selectedGroups.map((group) => group.group.id),
+				groups: selectedGroups.map((group) => group.id),
 			});
 
 			navigation.push("MainApp");

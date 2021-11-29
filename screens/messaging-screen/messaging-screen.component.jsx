@@ -1,5 +1,11 @@
 import { StatusBar } from "expo-status-bar";
-import React, { useCallback, useState, useEffect, useRef } from "react";
+import React, {
+	useCallback,
+	useState,
+	useEffect,
+	useRef,
+	useContext,
+} from "react";
 import {
 	StyleSheet,
 	Text,
@@ -20,36 +26,47 @@ import SendButton from "../../components/send-button/send-button.component";
 import Message from "../../components/message/message.component";
 import MessageHeader from "../../components/message-header/message-header.component";
 
+import firebaseApp from "../../firebase/config";
+import { getAuth } from "@firebase/auth";
+import { useAuthState } from "react-firebase-hooks/auth";
+import { UserContext } from "../../App";
+
+import {
+	getFirestore,
+	collection,
+	doc,
+	addDoc,
+	updateDoc,
+	arrayUnion,
+	Timestamp,
+} from "firebase/firestore";
+import {
+	useCollection,
+	useCollectionData,
+	useDocumentData,
+} from "react-firebase-hooks/firestore";
+
 export default function MessagingScreen({ navigation, route }) {
-	const { groupName } = route.params;
+	const { groupName, groupId } = route.params;
 
 	// ref for the scrollview
 	const scrollRef = useRef(null);
 
 	const [inputVal, setInputVal] = useState("");
-	const [messages, setMessages] = useState([]);
 	const [keyboardShown, setKeyboardShown] = useState(false);
 
 	// effects run at beginning of mount:
 	useEffect(() => {
-		// make our "api call" to our actual messages
-		setMessages(lastMessages);
 		// add listeners to our keyboard
 		const showSubscription = Keyboard.addListener("keyboardDidShow", () => {
-			// console.log("keyboard showing");
 			setKeyboardShown(true);
-			// Alert.alert("YOU OPENED THE KEYBOARD");
 		});
 
 		const hideSubscription = Keyboard.addListener("keyboardDidHide", () => {
-			// console.log("Keyboard hiddedn");
 			setKeyboardShown(false);
-			// Alert.alert("YOU CLOSED THE KEYBOARD");
 		});
 
 		// on initial render, scroll to end
-		scrollRef.current.scrollToEnd({ animated: true, duration: 300 });
-
 		// clean up the listeners we added
 		return () => {
 			showSubscription.remove();
@@ -61,37 +78,71 @@ export default function MessagingScreen({ navigation, route }) {
 		scrollRef.current.scrollToEnd({ animated: true, duration: 300 });
 	});
 
+	// get authentication data
+	const [user, loading, error] = useAuthState(getAuth(firebaseApp));
 	useEffect(() => {
-		scrollRef.current.scrollToEnd({ animated: true, duration: 300 });
-	}, [messages]);
+		if (!user) navigation.navigate("Onboarding");
+	}, [user]);
 
-	const onInputChange = (text) => {
-		setInputVal(text);
-	};
+	// get user's actual data:
+	const [userInfo, setUserInfo] = useContext(UserContext);
+	const [userInfoValue, userInfoLoading, userInfoError] = useDocumentData(
+		doc(getFirestore(firebaseApp), "users", user.uid)
+	);
+	useEffect(() => {
+		if (userInfoLoading) return;
+		setUserInfo(userInfoValue);
+	}, [userInfoValue, userInfoLoading]);
 
-	const onSend = () => {
-		if (inputVal.length > 0) {
-			setMessages([
-				...messages,
-				{
-					id: Math.floor(Math.random() * 1000),
-					content: inputVal,
-					user: {
-						id: currentUserId,
-						firstName: "Jason",
-						lastName: "Bourne",
-					},
-					timeStamp: new Date(),
-				},
-			]);
+	const [messagesSnap, messagesLoading, messagesError] = useCollection(
+		collection(getFirestore(firebaseApp), "messages", groupId, "messages")
+	);
+	const [messages, setMessages] = useState([]);
+	useEffect(() => {
+		(async () => {
+			if (!userInfo) return;
+			else if (messagesSnap?.docs?.length > 0) {
+				const allMessages = [];
+				messagesSnap.forEach((message) => {
+					// console.log(message.data());
+					allMessages.push({
+						...message.data(),
+						id: message.id,
+						timeStamp: message.data().timestamp.toDate(),
+					});
+				});
+				setMessages(allMessages);
+			}
+		})();
+	}, [userInfo, messagesSnap]);
 
-			setInputVal("");
-			// console.log(messages.map((message) => message?.content));
+	const onSend = async () => {
+		try {
+			if (inputVal.length > 0) {
+				await addDoc(
+					collection(
+						getFirestore(firebaseApp),
+						"messages",
+						groupId,
+						"messages"
+					),
+					{
+						content: inputVal,
+						timestamp: Timestamp.fromDate(new Date()),
+						// userFirstName: userInfo.firstName,
+						// userLastName: userInfo.lastName,
+						user: userInfo,
+					}
+				);
+			}
+		} catch (err) {
+			console.log(err);
 		}
 	};
 
-	const currentUserId = "555";
-	// dummy data at the end
+	// useEffect(() => {
+	// 	console.log(messages);
+	// });
 
 	return (
 		<KeyboardAvoidingView
@@ -100,22 +151,31 @@ export default function MessagingScreen({ navigation, route }) {
 		>
 			<View style={styles.whiteContainer}>
 				<MessageHeader groupName={groupName} navigation={navigation} />
-				<ScrollView style={{ width: "100%" }} ref={scrollRef}>
+				<ScrollView
+					style={{ width: "100%" }}
+					ref={scrollRef}
+					onContentSizeChange={() => scrollRef.current.scrollToEnd()}
+				>
 					<Pressable onPress={Keyboard.dismiss}>
-						{messages.map(({ id, content, user, timeStamp }) => (
-							<Message
-								key={id}
-								content={content}
-								user={user}
-								timeStamp={timeStamp}
-								currentUserId={currentUserId}
-							/>
-						))}
+						{messages.map((message) => {
+							<Text key={message.id}>{JSON.stringify(message)}</Text>;
+						})}
+						{messages &&
+							user &&
+							messages.map(({ id, content, user, timeStamp }) => (
+								<Message
+									key={id}
+									content={content}
+									user={user}
+									timeStamp={timeStamp}
+									currentUserId={userInfo.id}
+								/>
+							))}
 					</Pressable>
 				</ScrollView>
 				<View style={styles.textInputContainer}>
 					<TextInput
-						onChangeText={onInputChange}
+						onChangeText={setInputVal}
 						value={inputVal}
 						placeholder="Enter a message..."
 						style={styles.textInput}
@@ -129,10 +189,6 @@ export default function MessagingScreen({ navigation, route }) {
 		</KeyboardAvoidingView>
 	);
 }
-// <TouchableWithoutFeedback
-// 	onPress={Keyboard.dismiss}
-// 	style={styles.container}
-// ></TouchableWithoutFeedback>;
 
 const styles = StyleSheet.create({
 	container: {
@@ -168,7 +224,7 @@ const styles = StyleSheet.create({
 		flexDirection: "row",
 	},
 });
-
+/*
 const createDate = (hour, minute) =>
 	new Date(`October 15, 2021 ${hour}:${minute} PM`);
 
@@ -269,6 +325,7 @@ const lastMessages = [
 	},
 ];
 */
+/*
 const lastMessages = [
 	{
 		id: "1231",
@@ -352,3 +409,4 @@ const lastMessages = [
 		timeStamp: createDate(5, 32),
 	},
 ];
+*/
