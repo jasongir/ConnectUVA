@@ -111,7 +111,11 @@ export default function MessagingScreen({ navigation, route }) {
 						timeStamp: message.data().timestamp.toDate(),
 					});
 				});
+
+				allMessages.sort((a, b) => a.timeStamp - b.timeStamp);
+				// console.log(allMessages);
 				setMessages(allMessages);
+				setInputVal("");
 			}
 		})();
 	}, [userInfo, messagesSnap]);
@@ -129,8 +133,6 @@ export default function MessagingScreen({ navigation, route }) {
 					{
 						content: inputVal,
 						timestamp: Timestamp.fromDate(new Date()),
-						// userFirstName: userInfo.firstName,
-						// userLastName: userInfo.lastName,
 						user: userInfo,
 					}
 				);
