@@ -42,7 +42,7 @@ export default function App() {
 	else
 		return (
 			<NavigationContainer>
-				<Stack.Navigator initialRouteName="Onboarding">
+				<Stack.Navigator initialRouteName="InformationForm">
 					<Stack.Screen
 						name="Onboarding"
 						component={Onboarding}

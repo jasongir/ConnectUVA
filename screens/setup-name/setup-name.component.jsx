@@ -52,11 +52,7 @@ export default function SetupName({ navigation }) {
 			console.log(err);
 		}
 	};
-	// useEffect(() => {
-	//    (async () => {
 
-	// 	})();
-	// }, [])
 	return (
 		<View style={styles.container}>
 			<Text style={styles.title}>What's your name?</Text>
