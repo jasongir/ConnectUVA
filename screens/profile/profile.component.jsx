@@ -3,13 +3,21 @@ import React from "react";
 import { StyleSheet, Text, View, Button, ScrollView, Linking } from "react-native";
 //import { Avatar } from "react-native-elements";
 import Avatar from "../../components/avatar/avatar.component";
-
+import { firebaseApp } from "../../firebase/config"
+import { getFirestore, collection, doc } from "firebase/firestore";
+import { useDocument } from "react-firebase-hooks/firestore";
 
 import { ListItem, Icon, Input } from 'react-native-elements'
 
 import Ionicons from "@expo/vector-icons/Ionicons";
 
 export default function Profile({ navigation }) {
+	const [value, loading, error] = useDocument(
+		doc(getFirestore(firebaseApp), 'users', 'XAgqJE0fjKekdeIphdedGCZZ4Go1')
+	);
+	const firstname = value && value.data().firstName
+	const lastname = value && value.data().lastName
+	const fullname = firstname + " " + lastname
 	const groupPress = () => {
 		navigation.push("GroupManagement");
 	};
@@ -40,11 +48,11 @@ export default function Profile({ navigation }) {
 			</View> */}
 
 				<View style={styles.avatar}>
-					<Avatar style={styles.avatar}  name="Sam Galletta" size={size}/>
+					<Avatar style={styles.avatar}  name={fullname} size={size}/>
 				</View>
 
 				<View style={styles.text}>
-					<Text style={styles.textStyle}>Sam Galletta</Text>
+					<Text style={styles.textStyle}>{fullname}</Text>
 				</View>
 
 

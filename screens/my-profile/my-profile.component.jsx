@@ -1,5 +1,9 @@
 import { StatusBar } from "expo-status-bar";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { getDatabase } from "firebase/database";
+import { firebaseApp } from "../../firebase/config"
+import { getFirestore, collection, doc, updateDoc } from "firebase/firestore";
+import { useDocument } from "react-firebase-hooks/firestore";
 import {
 	StyleSheet,
 	Text,
@@ -19,13 +23,20 @@ import { ListItem, Icon, Input } from "react-native-elements";
 import Ionicons from "@expo/vector-icons/Ionicons";
 
 export default function myProfile({ navigation }) {
-	const savePress = () => {
+
+	const [newfname, setfName] = useState("");
+	const [newlname, setlName] = useState("");
+	const [newemail, setEmail] = useState("");
+
+	const [value, loading, error] = useDocument(
+		doc(getFirestore(firebaseApp), 'users', 'XAgqJE0fjKekdeIphdedGCZZ4Go1')
+	);
+	
+	const updateInfo = async() => {
+		const userRef = doc(getFirestore(firebaseApp), 'users', 'XAgqJE0fjKekdeIphdedGCZZ4Go1')
+		await updateDoc(userRef, {firstName: newfname}, {lastName: newlname}, {email: newemail});
 		Alert.alert("Changes have been saved");
 		navigation.pop();
-	};
-
-	const showDatePicker = () => {
-		return <DatePickerIOS value={date} mode="date" onChange={onChange} />;
 	};
 
 	account = {
@@ -34,8 +45,13 @@ export default function myProfile({ navigation }) {
 		email: "sjg7egt@virginia.edu",
 	};
 
+	const firstname = value && value.data().firstName
+	const lastname = value && value.data().lastName
+	const email = value && value.data().email
 	const size = 150;
+	const fullname = firstname + " " + lastname
 	return (
+
 		<View style={styles.container}>
 			<View style={styles.header}>
 				<Text style={styles.title}>Account</Text>
@@ -43,33 +59,27 @@ export default function myProfile({ navigation }) {
 			<KeyboardAvoidingView behavior={"padding"} style={{ flex: 1 }}>
 				<ScrollView>
 					<View style={styles.avatar}>
-
-					<Avatar style={styles.avatar} name="Sam Galletta" size={size} />
-
-
-
+						<Avatar style={styles.avatar} name={fullname} size={size} />
 					</View>
-
 					<Input
-						placeholder={account.name}
+						placeholder={firstname}
 						autoCapitalize="words"
-						label="Full Name"
+						label="First Name"
+						onChangeText={(text) => setfName(text)}
 					/>
 					<Input
-						placeholder={account.email}
+						placeholder={lastname}
+						autoCapitalize="words"
+						label="Last Name"
+						onChangeText={(text) => setlName(text)}
+					/>
+					<Input
+						placeholder={email}
 						textContentType="emailAddress"
 						label="e-mail"
+						onChangeText={(text) => setEmail(text)}
 					/>
-
-					<Input placeholder={account.dob} label="Birthdate" />
-
-					<Input
-						placeholder="password"
-						secureTextEntry={true}
-						label="Change Password"
-					/>
-
-					<Button title="Apply Changes" onPress={savePress} />
+					<Button title="Apply Changes" onPress={updateInfo} />
 				</ScrollView>
 			</KeyboardAvoidingView>
 		</View>

@@ -1,9 +1,23 @@
 import { StatusBar } from "expo-status-bar";
-import React from "react";
+import React, { useState } from "react";
 import { StyleSheet, Text, View, Alert, TouchableHighlight, Pressable, TouchableOpacity } from "react-native";
 import { ListItem, Icon, Input, Button } from 'react-native-elements'
-export default function GroupManagement({ navigation }) {
+import SelectBox from 'react-native-multi-selectbox'
+import { xorBy } from 'lodash'
+import { getFirestore, collection, doc, updateDoc } from "firebase/firestore";
+import firebaseApp from "../../firebase/config.js";
+import { useCollection, useDocument } from "react-firebase-hooks/firestore";
 
+export default function GroupManagement({ navigation }) {
+    const [snapshot, loading, error] = useCollection(
+		collection(getFirestore(firebaseApp), "groups")
+    );
+    
+    const [value, load, err] = useDocument(
+		doc(getFirestore(firebaseApp), 'users', 'XAgqJE0fjKekdeIphdedGCZZ4Go1')
+    );
+    
+    
     const leaveGroup = () =>
         Alert.alert(
             "Leave Group",
@@ -19,40 +33,47 @@ export default function GroupManagement({ navigation }) {
     const addGroupPress = () => {
         navigation.push("GroupSearch");
     };
+
+    function onMultiChange() {
+        return (item) => setSelectedGroups(xorBy(selectedGroups, [item], 'id'))
+    }
+
+    
+    const userGroups = value && value.data().groups
+    console.log(userGroups)
+        
+    const allgroups = snapshot && snapshot.docs.map(doc => {
+        const container = {};
+        
+        container.id = doc.id;
+        container.item = doc.data().name;
+        
+    
+        return container;
+    })
+    
+    
+    const [selectedGroups, setSelectedGroups] = useState([])
+    
     return (
         <View style={styles.container}>
-
             <View style={styles.header}>
                 <Text style={styles.title}>Groups</Text>
             </View>
-
-            <View style={styles.list}>
-
-                <ListItem topDivider bottomDivider onPress={leaveGroup}>
-                    <ListItem.Content>
-                        <ListItem.Title>Group 1</ListItem.Title>
-                    </ListItem.Content>
-                </ListItem>
-
-
-                <ListItem topDivider bottomDivider onPress={leaveGroup}>
-                    <ListItem.Content>
-                        <ListItem.Title>Group 2</ListItem.Title>
-                    </ListItem.Content>
-                </ListItem>
-            </View>
-
-
-            <TouchableOpacity onPress={addGroupPress}>
-                <View style={styles.addGroup}>
-                    <Icon
-                        name="add-circle-outline"
-                        size={40}
-                    />
-                    </View>
-            </TouchableOpacity>
-
-
+            
+            <View style={{ height: 100 }} />
+            <Text style={{ fontSize: 20, paddingBottom: 10 }}>Choose Groups</Text>
+            <SelectBox
+                label="Select multiple"
+                options={allgroups}
+                selectedValues={selectedGroups}
+                onMultiSelect={onMultiChange()}
+                onTapClose={onMultiChange()}
+                arrowIconColor="black"
+                searchIconColor="black"
+                toggleIconColor="black"
+                isMulti
+            />
         </View>
     );
 }
