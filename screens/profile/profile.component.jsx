@@ -17,6 +17,9 @@ import { ListItem, Icon, Input } from "react-native-elements";
 import { signOut, getAuth } from "@firebase/auth";
 import firebaseApp from "../../firebase/config";
 import { useAuthState } from "react-firebase-hooks/auth";
+import { useDocument } from "react-firebase-hooks/firestore";
+import { getFirestore, collection, doc, updateDoc } from "firebase/firestore";
+
 
 export default function Profile({ navigation }) {
 	const groupPress = () => {
@@ -42,7 +45,14 @@ export default function Profile({ navigation }) {
 	useEffect(() => {
 		if (!user) navigation.navigate("Onboarding");
 	}, [user]);
+
+	const [value, lding, err] = useDocument(
+		doc(getFirestore(firebaseApp), 'users', user.uid)
+	);
 	const size = 150;
+	const firstname = value && value.data().firstName
+	const lastname = value && value.data().lastName
+	const fullname = firstname + " " + lastname
 
 	return (
 		<View style={styles.container}>
@@ -56,11 +66,11 @@ export default function Profile({ navigation }) {
 			</View> */}
 
 				<View style={styles.avatar}>
-					<Avatar style={styles.avatar} name="Sam Galletta" size={size} />
+					<Avatar style={styles.avatar} name={fullname} size={size} />
 				</View>
 
 				<View style={styles.text}>
-					<Text style={styles.textStyle}>Sam Galletta</Text>
+					<Text style={styles.textStyle}>{fullname}</Text>
 				</View>
 
 				<View style={styles.list}>
