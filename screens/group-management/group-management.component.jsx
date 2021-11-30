@@ -1,58 +1,141 @@
 import { StatusBar } from "expo-status-bar";
-import React from "react";
-import { StyleSheet, Text, View, Alert, TouchableHighlight, Pressable, TouchableOpacity } from "react-native";
-import { ListItem, Icon, Input, Button } from 'react-native-elements'
-export default function GroupManagement({ navigation }) {
+import React, { useState, useEffect } from "react";
+import { StyleSheet, Text, View, Alert, TouchableHighlight, Pressable, TouchableOpacity, Button } from "react-native";
+import { ListItem, Icon, Input } from 'react-native-elements'
+import SelectBox from 'react-native-multi-selectbox'
+import { xorBy } from 'lodash'
+import { getAuth } from "firebase/auth";
+import { useAuthState } from "react-firebase-hooks/auth";
+import { UserContext } from "../../App";
+import firebaseApp from "../../firebase/config.js";
+import {
+    getFirestore,
+    collection,
+    query,
+    where,
+    doc,
+    getDoc,
+    getDocs,
+    setDoc
+} from "firebase/firestore";
+import {
+    useCollection,
+    useCollectionData,
+    useDocumentData,
+} from "react-firebase-hooks/firestore";
 
-    const leaveGroup = () =>
-        Alert.alert(
-            "Leave Group",
-            "Do you want to leave this group?",
-            [
-                {
-                    text: "Cancel",
-                    style: "cancel"
-                },
-                { text: "Leave", onPress: () => Alert.alert("You have left this group"), style: "destructive" }
-            ]
+export default function GroupManagement({ navigation }) {
+    const [snapshot, loading, error] = useCollection(
+        collection(getFirestore(firebaseApp), "groups")
+    );
+
+    const [user, lding, er] = useAuthState(getAuth(firebaseApp));
+    useEffect(() => {
+        if (!user) navigation.navigate("Onboarding");
+    }, [user]);
+
+    const [value, load, err] = useDocumentData(
+        doc(getFirestore(firebaseApp), 'users', user.uid)
+    );
+
+    function onMultiChange() {
+        return (item) => setSelectedGroups(xorBy(selectedGroups, [item], 'id'))
+    }
+    const [userGroups, setUserGroups] = useState([]);
+    useEffect(() => {
+        (async () => {
+            if (!value) return;
+            else if (snapshot?.docs?.length > 0) {
+                const selectedGroups = [];
+                snapshot.forEach((group) => {
+                    if (value.groups.includes(group.id))
+                        selectedGroups.push({ ...group.data(), id: group.id });
+                });
+                setSelectedGroups(selectedGroups);
+            }
+        })();
+    }, [value, snapshot]);
+
+    // const userDisplayGroups = userGroups.map(group => {
+    //     const container = {};
+
+    //     container.id = group.id
+    //     container.item = group.name;
+
+    //     return container;
+    // })
+    // const ug = value && value.data().groups
+    // console.log(userGroups)
+
+    const nextPress = async () => {
+
+        const firestore = getFirestore(firebaseApp);
+        const userRef = await setDoc(
+            doc(firestore, "users", user.uid),
+            {
+                groups: selectedGroups.map((group) => group.id),
+            },
+            { merge: true }
         );
-    const addGroupPress = () => {
-        navigation.push("GroupSearch");
+        
+        
+        selectedGroups.forEach(async (group) => {
+            if (!group.members.includes(user.uid)){
+            const groupRef = await setDoc(
+                doc(firestore, "groups", group.id),
+                {
+                    members: [...group.members, user.uid],
+                },
+                { merge: true }
+            );
+            }
+        });
+        // setUserInfo({
+        //     ...userInfo,
+        //     groups: selectedGroups.map((group) => group.id),
+        // });
+        
+        Alert.alert("Changes Applied!")
+        navigation.pop();
     };
+
+    const allgroups = snapshot && snapshot.docs.map(doc => {
+        const container = {};
+
+        container.id = doc.id;
+        container.item = doc.data().name;
+
+        return container;
+    })
+
+
+    const [selectedGroups, setSelectedGroups] = useState([])
+
     return (
         <View style={styles.container}>
-
             <View style={styles.header}>
                 <Text style={styles.title}>Groups</Text>
             </View>
 
-            <View style={styles.list}>
-
-                <ListItem topDivider bottomDivider onPress={leaveGroup}>
-                    <ListItem.Content>
-                        <ListItem.Title>Group 1</ListItem.Title>
-                    </ListItem.Content>
-                </ListItem>
-
-
-                <ListItem topDivider bottomDivider onPress={leaveGroup}>
-                    <ListItem.Content>
-                        <ListItem.Title>Group 2</ListItem.Title>
-                    </ListItem.Content>
-                </ListItem>
+            <View style={{ height: 100 }} />
+            <Text style={{ fontSize: 20, padding: 10 }}>Choose Groups</Text>
+            <View style={{padding: 10}}>
+            <SelectBox
+                label="Select multiple"
+                options={allgroups}
+                selectedValues={selectedGroups}
+                onMultiSelect={onMultiChange()}
+                onTapClose={onMultiChange()}
+                arrowIconColor="black"
+                searchIconColor="black"
+                toggleIconColor="black"
+                isMulti
+                multiOptionContainerStyle={{backgroundColor: "black"}} 
+                
+                
+            />
             </View>
-
-
-            <TouchableOpacity onPress={addGroupPress}>
-                <View style={styles.addGroup}>
-                    <Icon
-                        name="add-circle-outline"
-                        size={40}
-                    />
-                    </View>
-            </TouchableOpacity>
-
-
+            <Button style={{alignItems: "baseline"}} title="Apply Changes" onPress={nextPress} />
         </View>
     );
 }
