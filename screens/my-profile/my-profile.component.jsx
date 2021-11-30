@@ -19,7 +19,9 @@ import { ListItem, Icon, Input } from "react-native-elements";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { signOut, getAuth } from "@firebase/auth";
 import firebaseApp from "../../firebase/config";
-import { useAuthState } from "react-firebase-hooks/auth";
+import { getFirestore, collection, doc, updateDoc } from "firebase/firestore";
+import { useAuthState} from "react-firebase-hooks/auth";
+import { useDocument } from "react-firebase-hooks/firestore";
 
 export default function myProfile({ navigation }) {
 	const savePress = () => {
@@ -39,13 +41,31 @@ export default function myProfile({ navigation }) {
 		if (!user) navigation.navigate("Onboarding");
 	}, [user]);
 
-	account = {
-		name: "Sam Galletta",
-		dob: "09/06/2000",
-		email: "sjg7egt@virginia.edu",
+	const [newfname, setfName] = useState("");
+	const [newlname, setlName] = useState("");
+	const [newemail, setEmail] = useState("");
+	
+	const [value, lding, err] = useDocument(
+		doc(getFirestore(firebaseApp), 'users', user.uid)
+	);
+	// console.log(newfname)
+	// console.log(newlname)
+	// console.log(newemail)
+	const updateInfo = async() => {
+		const userRef = doc(getFirestore(firebaseApp), 'users', user.uid)
+		await updateDoc(userRef, {firstName: newfname, lastName: newlname, email: newemail})
+		Alert.alert("Changes have been saved");
+		navigation.pop();
 	};
 
+	
+	const firstname = value && value.data().firstName
+	const lastname = value && value.data().lastName
+	const email = value && value.data().email
 	const size = 150;
+	const fullname = firstname + " " + lastname
+	
+	
 	return (
 		<View style={styles.container}>
 			<View style={styles.header}>
@@ -53,30 +73,28 @@ export default function myProfile({ navigation }) {
 			</View>
 			<KeyboardAvoidingView behavior={"padding"} style={{ flex: 1 }}>
 				<ScrollView>
-					<View style={styles.avatar}>
-						<Avatar style={styles.avatar} name="Sam Galletta" size={size} />
+				<View style={styles.avatar}>
+						<Avatar style={styles.avatar} name={fullname} size={size} />
 					</View>
-
 					<Input
-						placeholder={account.name}
+						placeholder={firstname}
 						autoCapitalize="words"
-						label="Full Name"
+						label="First Name"
+						onChangeText={(text) => setfName(text)}
 					/>
 					<Input
-						placeholder={account.email}
+						placeholder={lastname}
+						autoCapitalize="words"
+						label="Last Name"
+						onChangeText={(text) => setlName(text)}
+					/>
+					{/* <Input
+						placeholder={email}
 						textContentType="emailAddress"
 						label="e-mail"
-					/>
-
-					<Input placeholder={account.dob} label="Birthdate" />
-
-					<Input
-						placeholder="password"
-						secureTextEntry={true}
-						label="Change Password"
-					/>
-
-					<Button title="Apply Changes" onPress={savePress} />
+						onChangeText={(text) => setEmail(text)}
+					/> */}
+					<Button title="Apply Changes" onPress={updateInfo} />
 					<Button title="Log out" onPress={logout} />
 				</ScrollView>
 			</KeyboardAvoidingView>
